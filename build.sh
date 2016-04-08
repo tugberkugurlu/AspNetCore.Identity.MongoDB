@@ -59,6 +59,7 @@ then
 fi
 
 outputDir=${OUTPUTFOLDER%%/}/apps
+packagesOutputDir=${OUTPUTFOLDER%%/}/packages
 projectDirectories=${scriptsDir%%/}/src/*/
 projectJsonFiles=${projectDirectories%%/}/project.json
 
@@ -96,6 +97,15 @@ do
         else
             echo "starting to publish for $projectDirectory"
             dnu publish $projectDirectory --configuration $CONFIGURATION --out $outputDir --runtime active || exit 1    
+        fi
+    else
+        echo "$projectFilePath is not publisable. Looking to see if it should be packed"
+        if [ -z ${PACK+x} ]
+        then
+            echo "Pack is disabled. Skipping pack on $projectDirectory"
+        else
+            echo "starting to pack for $projectDirectory"
+            dnu pack $projectDirectory --configuration $CONFIGURATION --out $packagesOutputDir || exit 1
         fi
     fi
 done
