@@ -1,0 +1,28 @@
+sudo: required
+language: csharp
+  
+env:
+  global:
+  - COMMIT=${TRAVIS_COMMIT::8}
+  - ARTIFACTS_PATHS=./artifacts
+  
+install:
+  - DNX_VERSION="1.0.0-rc1-update1"
+  - curl -sSL https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.sh | DNX_USER_HOME=$DNX_USER_HOME DNX_BRANCH=v$DNX_VERSION sh
+  - source ~/.dnx/dnvm/dnvm.sh && dnvm install $DNX_VERSION -alias default && dnvm alias default | xargs -i ln -s ~/.dnx/runtimes/{} ~/.dnx/runtimes/default
+  - curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+  - sudo apt-get install -y nodejs
+  - sudo npm install semver -g
+ 
+before_script:
+  - chmod u+x build.sh
+  - chmod u+x ./scripts/set-build-version.sh
+  - eval $(./scripts/set-build-version.sh)
+  - bash -c "source ~/.dnx/dnvm/dnvm.sh"
+  - export PATH=$PATH:$HOME/.local/bin
+  - mono --version
+  - dnu --version
+  - dnvm list
+  
+script:
+  - ./build.sh --version=$PROJECT_BUILD_VERSION --configuration=RELEASE --outputFolder=./artifacts --pack
