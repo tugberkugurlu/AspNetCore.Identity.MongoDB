@@ -20,6 +20,12 @@ case $i in
     shift # past argument with no value
     ;;
     *)
+    ;;
+    --publish)
+    PUBLISH="YES"
+    shift # past argument with no value
+    ;;
+    *)
             # unknown option
     ;;
 esac
@@ -29,6 +35,7 @@ echo "BUILD VERSION = ${BUILDVERSION}"
 echo "CONFIGURATION = ${CONFIGURATION}"
 echo "OUTPUT FOLDER = ${OUTPUTFOLDER}"
 echo "PACK          = ${PACK}"
+echo "PUBLISH       = ${PUBLISH}"
 
 if [ -z ${CONFIGURATION+x} ]
 then
@@ -50,11 +57,6 @@ then
     echo "No output folder is specified, defaulting to $artifactsDir"
     OUTPUTFOLDER=$artifactsDir
 fi
-
-echo "BUILD VERSION = ${BUILDVERSION}"
-echo "CONFIGURATION = ${CONFIGURATION}"
-echo "OUTPUT FOLDER = ${OUTPUTFOLDER}"
-echo "PACK          = ${PACK}"
 
 outputDir=${OUTPUTFOLDER%%/}/apps
 projectDirectories=${scriptsDir%%/}/src/*/
@@ -88,9 +90,9 @@ do
     echo "checking if $projectFilePath is publisable"
     if cat $projectFilePath | grep '"emitEntryPoint": true' &>/dev/null
     then
-        if [ -z ${PACK+x} ]
+        if [ -z ${PUBLISH+x} ]
         then
-            echo "$projectDirectory is publishable but pack is disabled"
+            echo "$projectDirectory is publishable but publish is disabled"
         else
             echo "starting to publish for $projectDirectory"
             dnu publish $projectDirectory --configuration $CONFIGURATION --out $outputDir --runtime active || exit 1    
