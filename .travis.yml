@@ -33,4 +33,4 @@ before_script:
 script:
 - ./build.sh --version=$PROJECT_BUILD_VERSION --configuration=RELEASE --outputFolder=./artifacts --pack
 after_success:
-- if [ ! -z "$TRAVIS_TAG" ] && semver $TRAVIS_TAG &>/dev/null; then ./scripts/push-to-nuget.sh --apikey=$NUGET_API_KEY; fi
+- if [ ! -z "$TRAVIS_TAG" ] && semver $TRAVIS_TAG &>/dev/null; then ./scripts/push-to-nuget.sh --apikey=$NUGET_API_KEY --version=$PROJECT_BUILD_VERSION; fi
