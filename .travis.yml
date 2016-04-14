@@ -1,18 +1,15 @@
 sudo: required
 language: csharp
-
 addons:
   artifacts: true
-  
 env:
   global:
   - COMMIT=${TRAVIS_COMMIT::8}
   - ARTIFACTS_PATHS=./artifacts
-  - secure: tHhDFo5fTDSLNBaNVPzg4VIlq0xr6QQ/MR4Cn/LMymGgfypPpgcxKunQ2mHdRD2HHwzrzLqqJHyENKeftL8PS0lrgzmb3Uwrd8vaamSBnCC8p8bCDorfJzEQ9lzkTc1ZvBz4yQpOhoPtLAsSRq3nfdvviN1pkPFWdOShI1N5oO4yaSDz6P7KRlPq+bKgA61KrOa6A1R0UyoB90usGC1kNt0gUcy1Qv0vWKxIJWcyGNQBiYbA1k22Raw21yrRYiE513Bv89/wqsTqADUcXtcCbIM68V648DD/Ti7dr2e9oNRxXesGVaYXwtIxmiV34AYIydkfVyDowQ+qyNKEgY4Fhqzx1QM6fLpAoTEXXXEBrOQw4SVUZwOtMGHbRuCP8XtC9pkCQohp48MBJObXbDDZ5QoKOc6H6dKd2+ppYY/PBsqALUz58gSpkgO6qP7Wc0GVo7W5fT8Mml2w8gwiht54nmJhcYdxCGkFaz7+D+1iX2kkdpjbGMcxX0B88nqOH0vmTvut3am2cCFoiYAK6DV5XEBDxqDQ0iGE539k+KE/oRA4cC76AjHAFyO+mOdjgXhVN713Q/yGifgbBsHimua8E8t/Ki2K+J+10T0yB/ahAIKcSJJOYRS0jqgNrB5aGz8Rv9YAbixJvF/JdmPOTfYGaiTjX7imt460NgIt4440Pzs=
   - secure: MpHCEDNS9CkTRVOTMlomxOQVNaAqwnUOy7qdD3qeqZJi7o5cWYRbz5b1gbhDUgYqqMIi/WHX82Gxrnb9lTvKrDB9SZBGAQNGWS9clIZSaKCI1VB7G2vFt5t4b+gRjYx3pUZHwNW23xhLmq9k8QOzr7UHRW4WsLKlPfrlHz2Kmay8wgBOc5O1TwcH0HrEdeyuNZkd7k4n0nv0uf4FcUcvIxxNbLv77Cfqg3BchtznM79kSypYN/suS0GTlr0XIT+zrRKRg+3YkdFOdUqQzg0W6SOffBsyaDD0mHCEPiL+diaKCZvfZpBuY6YFNhOpzYEZnk558+8tLfJ7fKQw4z7RmZLQlugHuHiOTdxubmDeBm1+qPxduU/CPk3fjSH14EPNFVTY3iylEiEXrIuWyt8pqi8XUFn9FCHCqKwp1RF3NV8bFR44B2XDggs9UH5oauSj5pJwxrL1QyXvuA+eqimjTiPbzhkmOB3AfzQ/jMlhUQgt3aSmmZF8Ccekf+5eERpnm0o6hmz/SGhSp51uD0wSUwmIiiPmg/Gq2onzm+kdCz6s+y5ES4PzHXifCP9B4lLWW6cI2OH+tLLgZ0/4yytaPgqe9Rb/ckECZHRZXX5VRDb48CruU6NLFKbCGO0JVjtzYRAA7ur0VWSOP77AG1tgbfSrsgyQMo+0LsBG6DQ0B88=
   - secure: pOpohtW9xYgVc+9ZejLKYUwJsCw8kCGM+4i9YIVY6kpbZGjrxftdggRrlqb3PqowgwDK+dAvogoNYvMM+ObgNfOfSjBsA2u/4vt/hxrICfH+ORCC7T3iELhvHYtw0yYKhmos6anKHAC+9uTIqa7BzZoNNGcVYq1r1D5GCkkQTvIHiWAc+CRowPc/ZpPwSnaxIPn3JBljls1xIrETIHUnS+ZYxQVbC1jTpzHzGxX9uj3qexWygsJmmrdYsjj7ieH5b1GHNZb70fheAI/GR6GD75IKV77TrK8gvHtgT5JA/tTAJ42zOfHlk2It+Nn5juKNXDmnR+9ixM7gxdxP2zO5NYOUQpZ61gv6fyZnxP2lsndn7tPRUQlx/jOPDBMmWXRHcI7e5lCBFUwJXsuav25h6lUjWPNRz1XGO6/0+l0m05GJ6SF5GziVvXK6FAikmIwWb6iQ9gVx5guwuWiK/f8Y65tp30ivwvo3L/g5p4RqaqLAXEXRzh4AyHOo8qQzmQPIfrxIOm485kmjY5dpYkVqWRLtnNCQWjxY/A5d//RZi79+yNvgWrQTHOBVP5h9V8IR7e8lm+7VTuzJE++JxCL6rX4TkIgMkrnPPTZCkDxP9QCovQkiuWr2lJmlymmWqgotIlwbYTuUY/9NaX5CqfWk9HFOTbPwIMBuZLTIWvl2j7M=
   - secure: GpJT2rWWjjISBdv+/ykudGB+n6Qf0eryEW4A3wRk+aI0Vg3s7KXb79dggMDehsHOTHJWF88OCE2gnpn0bKC170Kn/4HtFrGb2tVAKauZe/k5ye6d1hkG9+mTHkDWZp1CrlXQ4gR+kNhpz3O1RQPB4VDeDd5bWCGLBEUphnE2Is6A1VS0yzlEp5apPUnp2wzwI74eARd9I0vY8DgCtx/DOhqGbjPptmAmo33J9KwqRcQyI5nAgWcyMy13Xj9FEnIQ1Ze7NoodVzdJ/KINt04RyKRQYaUVY+02wbqZ+KNj5RZfde2Hurqac/A4tTuEC6p8KHATzRWfLvyLN8NHJJ3jq2ykCpo4pJnWv5bmaiFe8No2O+zok6wbTwA2uC3J4G8TzbPDaHSjmGzZzf2X5TYgpBfPCCfPfvQHJmkOU6IwZHSFYKQjiu1Cu7Hke0UZ+g+qjh3ilSy8+DH8bn4PavWpXI0pBFnAu9S5DAPKwlrkcgd7hQUfusEOkMlPQpElWZ5v3poxvHFtUDCpfllss65KGtiASidT1to501F2WpSomU3uMatfwhFSmfOIpbay9YqGk++FivybxZSV5viHMU/wm+Vwj+kZ/b1YpMsI9Euw6K36g7W0WI7J2T5PPmmKrHhtug+AmZULFqpDb4vYHxvsX8y7de4jDCcVVFjiYtOJfkw=
-
+  - secure: hFGb7DIEw6UAXIEtvmIpGvSwnijtiFBHlQ+0v2FFx96qQEYMzzbUSaw1WJEOBxav8vnvBsUhgEE6eqKiVjm/aENy467ULpMIUcGdW2Ab6HVoiBpCG9688cXVCTQnBjldntWHJFieWx4ptGekM2/zQhTO/2evDschBJj/gm1A4zaG7zqgMB+1auPBuE6t2PtX34MKRpHdIZlENZdRQgWWPvaAnqZmmpBVvxA+V6iNQHcoVQ1ZS6ZFaWQ0t/19KpO0SY6bU5udM35Uojvl8ebj1W6IwByz2FG4n8jWGMRSBXIqlyJI9ibSDn479STqnI6ds0Ad14RITcj1esD+cyazMqbG8koS0kAClJzSM+PXBhdsZjharvqLuzJO61o+HqC2OMy2V93NZ0NfEGPWymG0cHDLPJ2TmJAG7lJLVY4yq1h2qPJH6BFZ/YAGAI9+HxNkvtKWtfFUNCMaZt0lWWpiCV1SG/KliwClBqWbBo/kLUmQ/bZjRpap3KASrVs1fc2u4bD6Ab4HU8xjtGcMRkceZGCmoVHeyECndxbl1iMbXzBDWhsuV3UA7+NPZDHAPsj1H/SunskdAQEWnxHFPvfCb4YEhbtvdFd68oecC9/NYQO/ORMfSDWMLRGU70Cs3G8mz8Iew4sCZc/YsoGUltUm4eMTB+y7go2TWOKhS/e/4OQ=
 install:
 - sudo apt-get install -y jq
 - DNX_VERSION="1.0.0-rc1-update1"
@@ -21,11 +18,11 @@ install:
 - curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 - sudo apt-get install -y nodejs
 - sudo npm install semver -g
-
 before_script:
 - chmod u+x build.sh
 - chmod u+x ./scripts/set-build-version.sh
 - chmod u+x ./scripts/patch-version.sh
+- chmod u+x ./scripts/push-to-nuget.sh
 - eval $(./scripts/set-build-version.sh)
 - ./scripts/patch-version.sh --version=$PROJECT_BUILD_VERSION
 - bash -c "source ~/.dnx/dnvm/dnvm.sh"
@@ -33,6 +30,7 @@ before_script:
 - mono --version
 - dnu --version
 - dnvm list
-
 script:
 - ./build.sh --version=$PROJECT_BUILD_VERSION --configuration=RELEASE --outputFolder=./artifacts --pack
+after_success:
+- if [ ! -z "$TRAVIS_TAG" ] && semver $TRAVIS_TAG &>/dev/null; then ./scripts/push-to-nuget.sh --apikey=$NUGET_API_KEY; fi
