@@ -9,7 +9,7 @@ MongoDB data store adaptor for ASP.NET Core identity.
 ## Things left to do for 1.0.0-rc1.1
 
  - [x] Enable pull-request builds
- - [ ] Enable pushing artifacts to S3
+ - [x] Enable pushing artifacts to S3
  - [ ] Write the script to push to NuGet
  - [ ] Hook pushing to NuGet on tag builds
  - [ ] Update readme doc
