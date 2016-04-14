@@ -3,7 +3,6 @@
 baseVersion=0.0.0-0
 if semver "ignorethis" $(git tag -l) &>/dev/null
 then
-echo "hey"
     baseVersion=$(semver $((semver $(git tag -l)) | tail -n1) -i prerelease)
 fi
 
