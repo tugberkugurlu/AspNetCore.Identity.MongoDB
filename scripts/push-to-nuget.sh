@@ -49,4 +49,4 @@ then
 fi
 
 echo "pushing $nugetPackagePath to NuGet.org..."
-mono nuget.exe push $nugetPackagePath -ApiKey $APIKEY || exit 1
+mono $nugetExePath push $nugetPackagePath -ApiKey $APIKEY || exit 1
