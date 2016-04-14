@@ -2,7 +2,9 @@
 
 MongoDB data store adaptor for ASP.NET Core identity.
 
-> :warning: For the time being, this only works on full .NET desktop CLR on Windows and on Mono on other platforms (Linux, OSx).
+> :warning: 
+> 
+> For the time being, this only works on full .NET desktop CLR on Windows and on Mono on other platforms (Linux, OSx).
 
 ## Things left to do for 1.0.0-rc1.1
 
