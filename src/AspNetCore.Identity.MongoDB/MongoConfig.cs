@@ -1,5 +1,5 @@
 using Dnx.Identity.MongoDB.Models;
-using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using System;

@@ -36,14 +36,14 @@ namespace Dnx.Identity.MongoDB.Models
 
         public bool Equals(MongoUserClaim other)
         {
-            return other.ClaimType.Equals(ClaimType, StringComparison.InvariantCultureIgnoreCase)
-                && other.ClaimValue.Equals(ClaimValue, StringComparison.InvariantCultureIgnoreCase);
+            return other.ClaimType.Equals(ClaimType)
+                && other.ClaimValue.Equals(ClaimValue);
         }
 
         public bool Equals(Claim other)
         {
-            return other.Type.Equals(ClaimType, StringComparison.InvariantCultureIgnoreCase)
-                && other.Value.Equals(ClaimValue, StringComparison.InvariantCultureIgnoreCase);
+            return other.Type.Equals(ClaimType)
+                && other.Value.Equals(ClaimValue);
         }
     }
 }

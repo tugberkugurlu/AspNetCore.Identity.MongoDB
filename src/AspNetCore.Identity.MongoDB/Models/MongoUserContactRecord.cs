@@ -42,7 +42,7 @@ namespace Dnx.Identity.MongoDB.Models
 
         public bool Equals(MongoUserEmail other)
         {
-            return other.Value.Equals(Value, StringComparison.InvariantCultureIgnoreCase);
+            return other.Value.Equals(Value);
         }
     }
 }
