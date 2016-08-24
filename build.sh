@@ -75,7 +75,7 @@ do
 
     # restore
     echo "starting to restore for $projectDirectory"
-    dnu restore $projectDirectory || exit 1
+    dotnet restore $projectDirectory || exit 1
 done
 
 # build, publish
@@ -85,7 +85,7 @@ do
 
     # build
     echo "starting to build $projectFilePath"
-    dnu build $projectFilePath --configuration $CONFIGURATION --out $OUTPUTFOLDER || exit 1
+    dotnet build $projectFilePath --configuration $CONFIGURATION || exit 1
 
     # publish
     echo "checking if $projectFilePath is publisable"
@@ -96,7 +96,7 @@ do
             echo "$projectDirectory is publishable but publish is disabled"
         else
             echo "starting to publish for $projectDirectory"
-            dnu publish $projectDirectory --configuration $CONFIGURATION --out $outputDir --runtime active || exit 1    
+            dotnet publish $projectDirectory --configuration $CONFIGURATION --output $outputDir --runtime active --no-build || exit 1    
         fi
     else
         echo "$projectFilePath is not publisable. Looking to see if it should be packed"
@@ -105,7 +105,7 @@ do
             echo "Pack is disabled. Skipping pack on $projectDirectory"
         else
             echo "starting to pack for $projectDirectory"
-            dnu pack $projectDirectory --configuration $CONFIGURATION --out $packagesOutputDir || exit 1
+            dotnet pack $projectDirectory --configuration $CONFIGURATION --output $packagesOutputDir --no-build || exit 1
         fi
     fi
 done

@@ -230,7 +230,7 @@ namespace Dnx.Identity.MongoDB
 
         private static string GenerateId(string userName)
         {
-            return userName.ToLower(CultureInfo.InvariantCulture);
+            return userName.ToLower();
         }
     }
 }

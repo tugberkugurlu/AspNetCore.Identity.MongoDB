@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
-using System;
+﻿using System;
+using Microsoft.AspNetCore.Identity;
 
 namespace Dnx.Identity.MongoDB.Models
 {
@@ -23,14 +23,14 @@ namespace Dnx.Identity.MongoDB.Models
 
         public bool Equals(MongoUserLogin other)
         {
-            return other.LoginProvider.Equals(LoginProvider, StringComparison.InvariantCultureIgnoreCase)
-                && other.ProviderKey.Equals(ProviderKey, StringComparison.InvariantCulture);
+            return other.LoginProvider.Equals(LoginProvider)
+                && other.ProviderKey.Equals(ProviderKey);
         }
 
         public bool Equals(UserLoginInfo other)
         {
-            return other.LoginProvider.Equals(LoginProvider, StringComparison.InvariantCultureIgnoreCase)
-                && other.ProviderKey.Equals(ProviderKey, StringComparison.InvariantCulture);
+            return other.LoginProvider.Equals(LoginProvider)
+                && other.ProviderKey.Equals(ProviderKey);
         }
     }
 }
