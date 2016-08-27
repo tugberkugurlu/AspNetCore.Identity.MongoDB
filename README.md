@@ -6,6 +6,10 @@ MongoDB data store adaptor for [ASP.NET Core Identity](https://github.com/aspnet
 
 [The library is available at NuGet.org](https://www.nuget.org/packages/AspNetCore.Identity.MongoDB). You can start using the library by integrating it into your `project.json` file. This library supports [`netstandard1.6`](https://docs.microsoft.com/en-us/dotnet/articles/standard/library).
 
+### Samples
+
+You can find some samples under [./samples](./samples) folder and each of the sample contain a README file on its own with the instructions showing how to run them.
+
 ## Contributors
 
  - [Matt Whetton](https://github.com/mattwhetton)
