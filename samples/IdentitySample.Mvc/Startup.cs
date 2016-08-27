@@ -1,24 +1,33 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using IdentitySample.Models;
 using IdentitySample.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.DataProtection;
 using System.IO;
+using Microsoft.Extensions.Options;
+using System.Security.Claims;
+using MongoDB.Driver;
+using Dnx.Identity.MongoDB;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace IdentitySample
 {
+    public class MongoDbSettings 
+    {
+        public string ConnectionString { get; set; }
+        public string DatabaseName { get; set; }
+    }
+
     public class Startup
     {
+        private readonly IHostingEnvironment _env;
+
         public Startup(IHostingEnvironment env)
         {
             // Set up configuration sources.
@@ -35,24 +44,60 @@ namespace IdentitySample
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
+            _env = env;
         }
 
         public IConfigurationRoot Configuration { get; set; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// see: https://github.com/aspnet/Identity/blob/79dbed5a924e96a22b23ae6c84731e0ac806c2b5/src/Microsoft.AspNetCore.Identity/IdentityServiceCollectionExtensions.cs#L46-L68
+        /// </summary>
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
+            services.Configure<MongoDbSettings>(Configuration.GetSection("MongoDb"));
+            services.AddSingleton<IUserStore<MongoIdentityUser>>(provider =>
+            {
+                var options = provider.GetService<IOptions<MongoDbSettings>>();
+                var client = new MongoClient(options.Value.ConnectionString);
+                var database = client.GetDatabase(options.Value.DatabaseName);
+                var loggerFactory = provider.GetService<ILoggerFactory>();
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(options => {
+                return new MongoUserStore<MongoIdentityUser>(database, loggerFactory);
+            });
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                var dataProtectionPath = Path.Combine(_env.WebRootPath, "identity-artifacts");
                 options.Cookies.ApplicationCookie.AuthenticationScheme = "ApplicationCookie";
-                options.Cookies.ApplicationCookie.CookieName = "Interop";
-                options.Cookies.ApplicationCookie.DataProtectionProvider = DataProtectionProvider.Create(new DirectoryInfo("C:\\Github\\Identity\\artifacts"));
-            })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                options.Cookies.ApplicationCookie.DataProtectionProvider = DataProtectionProvider.Create(dataProtectionPath);
+                options.Lockout.AllowedForNewUsers = true;
+            });
+
+            // Services used by identity
+            services.AddAuthentication(options =>
+            {
+                // This is the Default value for ExternalCookieAuthenticationScheme
+                options.SignInScheme = new IdentityCookieOptions().ExternalCookieAuthenticationScheme;
+            });
+
+            // Hosting doesn't add IHttpContextAccessor by default
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddOptions();
+            services.AddDataProtection();
+
+            services.TryAddSingleton<IdentityMarkerService>();
+            services.TryAddSingleton<IUserValidator<MongoIdentityUser>, UserValidator<MongoIdentityUser>>();
+            services.TryAddSingleton<IPasswordValidator<MongoIdentityUser>, PasswordValidator<MongoIdentityUser>>();
+            services.TryAddSingleton<IPasswordHasher<MongoIdentityUser>, PasswordHasher<MongoIdentityUser>>();
+            services.TryAddSingleton<ILookupNormalizer, UpperInvariantLookupNormalizer>();
+            services.TryAddSingleton<IdentityErrorDescriber>();
+            services.TryAddSingleton<ISecurityStampValidator, SecurityStampValidator<MongoIdentityUser>>();
+            services.TryAddSingleton<IUserClaimsPrincipalFactory<MongoIdentityUser>, UserClaimsPrincipalFactory<MongoIdentityUser>>();
+            services.TryAddSingleton<UserManager<MongoIdentityUser>, UserManager<MongoIdentityUser>>();
+            services.TryAddScoped<SignInManager<MongoIdentityUser>, SignInManager<MongoIdentityUser>>();
+
+            AddDefaultTokenProviders(services);
 
             services.AddMvc();
 
@@ -70,25 +115,14 @@ namespace IdentitySample
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-
-                // For more details on creating database during deployment see http://go.microsoft.com/fwlink/?LinkID=615859
-                try
-                {
-                    using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
-                        .CreateScope())
-                    {
-                        serviceScope.ServiceProvider.GetService<ApplicationDbContext>()
-                             .Database.Migrate();
-                    }
-                }
-                catch { }
             }
             app.UseStaticFiles();
+
+            // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseIdentity()
                .UseFacebookAuthentication(new FacebookOptions
@@ -106,7 +140,6 @@ namespace IdentitySample
                     ConsumerKey = "BSdJJ0CrDuvEhpkchnukXZBUv",
                     ConsumerSecret = "xKUNuKhsRdHD03eLn67xhPAyE1wFFEndFo1X2UJaK2m1jdAxf4"
                 });
-            // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseMvc(routes =>
             {
@@ -114,6 +147,86 @@ namespace IdentitySample
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private void AddDefaultTokenProviders(IServiceCollection services)
+        {
+            var dataProtectionProviderType = typeof(DataProtectorTokenProvider<>).MakeGenericType(typeof(MongoIdentityUser));
+            var phoneNumberProviderType = typeof(PhoneNumberTokenProvider<>).MakeGenericType(typeof(MongoIdentityUser));
+            var emailTokenProviderType = typeof(EmailTokenProvider<>).MakeGenericType(typeof(MongoIdentityUser));
+            AddTokenProvider(services, TokenOptions.DefaultProvider, dataProtectionProviderType);
+            AddTokenProvider(services, TokenOptions.DefaultEmailProvider, emailTokenProviderType);
+            AddTokenProvider(services, TokenOptions.DefaultPhoneProvider, phoneNumberProviderType);
+        }
+
+        private void AddTokenProvider(IServiceCollection services, string providerName, Type provider)
+        {
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Tokens.ProviderMap[providerName] = new TokenProviderDescriptor(provider);
+            });
+
+            services.AddSingleton(provider);
+        }
+
+        public class UserClaimsPrincipalFactory<TUser> : Microsoft.AspNetCore.Identity.IUserClaimsPrincipalFactory<TUser>
+            where TUser : class
+        {
+            public UserClaimsPrincipalFactory(
+                UserManager<TUser> userManager,
+                IOptions<IdentityOptions> optionsAccessor)
+            {
+                if (userManager == null)
+                {
+                    throw new ArgumentNullException(nameof(userManager));
+                }
+                if (optionsAccessor == null || optionsAccessor.Value == null)
+                {
+                    throw new ArgumentNullException(nameof(optionsAccessor));
+                }
+
+                UserManager = userManager;
+                Options = optionsAccessor.Value;
+            }
+
+            public UserManager<TUser> UserManager { get; private set; }
+
+            public IdentityOptions Options { get; private set; }
+
+            public virtual async Task<ClaimsPrincipal> CreateAsync(TUser user)
+            {
+                if (user == null)
+                {
+                    throw new ArgumentNullException(nameof(user));
+                }
+
+                var userId = await UserManager.GetUserIdAsync(user);
+                var userName = await UserManager.GetUserNameAsync(user);
+                var id = new ClaimsIdentity(Options.Cookies.ApplicationCookieAuthenticationScheme,
+                    Options.ClaimsIdentity.UserNameClaimType,
+                    Options.ClaimsIdentity.RoleClaimType);
+                id.AddClaim(new Claim(Options.ClaimsIdentity.UserIdClaimType, userId));
+                id.AddClaim(new Claim(Options.ClaimsIdentity.UserNameClaimType, userName));
+                if (UserManager.SupportsUserSecurityStamp)
+                {
+                    id.AddClaim(new Claim(Options.ClaimsIdentity.SecurityStampClaimType,
+                        await UserManager.GetSecurityStampAsync(user)));
+                }
+                if (UserManager.SupportsUserRole)
+                {
+                    var roles = await UserManager.GetRolesAsync(user);
+                    foreach (var roleName in roles)
+                    {
+                        id.AddClaim(new Claim(Options.ClaimsIdentity.RoleClaimType, roleName));
+                    }
+                }
+                if (UserManager.SupportsUserClaim)
+                {
+                    id.AddClaims(await UserManager.GetClaimsAsync(user));
+                }
+
+                return new ClaimsPrincipal(id);
+            }
         }
     }
 }

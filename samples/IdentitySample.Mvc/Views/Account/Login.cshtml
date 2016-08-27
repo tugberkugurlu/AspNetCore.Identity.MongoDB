@@ -1,8 +1,9 @@
 @using System.Collections.Generic
 @using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Http.Authentication
+@using Dnx.Identity.MongoDB
 @model LoginViewModel
-@inject SignInManager<ApplicationUser> SignInManager
+@inject SignInManager<MongoIdentityUser> SignInManager
 
 @{
     ViewData["Title"] = "Log in";
