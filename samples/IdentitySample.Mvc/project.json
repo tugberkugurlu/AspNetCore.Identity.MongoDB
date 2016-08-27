@@ -1,0 +1,52 @@
+{
+  "authors": [
+    "Microsoft"
+  ],
+  "description": "Identity sample MVC application on ASP.NET Core",
+  "version": "1.0.0-*",
+  "dependencies": {
+    "Microsoft.AspNetCore.Mvc": "1.0.0",
+    "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0",
+    "Microsoft.AspNetCore.DataProtection.Extensions": "1.0.0",
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0",
+    "Microsoft.AspNetCore.Identity": "1.0.0",
+    "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0",
+    "Microsoft.AspNetCore.Authentication.Facebook": "1.0.0",
+    "Microsoft.AspNetCore.Authentication.Google": "1.0.0",
+    "Microsoft.AspNetCore.Authentication.Twitter": "1.0.0",
+    "Microsoft.AspNetCore.Authorization": "1.0.0",
+    "Microsoft.AspNetCore.StaticFiles": "1.0.0",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0",
+    "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0",
+    "Microsoft.Extensions.Logging.Console": "1.0.0",
+    "Microsoft.Extensions.Logging.Debug": "1.0.0",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+    "AspNetCore.Identity.MongoDB": "1.0.0-rc2"
+  },
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "preserveCompilationContext": true
+  },
+  "frameworks": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0",
+          "type": "platform"
+        }
+      }
+    }
+  },
+  "tools": {
+    "Microsoft.AspNetCore.Server.IISIntegration.Tools": "1.0.0-*"
+  },
+  "publishOptions": {
+    "include": [
+      "appsettings.json",
+      "web.config"
+    ]
+  }
+}
