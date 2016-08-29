@@ -10,14 +10,12 @@
         "tags": ["identity", "mongodb", "mongo", "aspnetcore", "auth"]
     },
     "dependencies": {
-        "NETStandard.Library": "1.6.0",
         "Microsoft.AspNetCore.Identity": "1.0.0",
         "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-        "MongoDB.Driver": "2.3.0-beta1",
-        "System.Collections.Specialized": "4.0.1"
+        "MongoDB.Driver": "2.3.0-rc1"
     },
     "frameworks": {
-        "netstandard1.6": {
+        "netstandard1.5": {
             "imports": "dnxcore50"
         }
     }
