@@ -60,6 +60,8 @@ namespace Dnx.Identity.MongoDB
                 throw new ArgumentNullException(nameof(user));
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             await _usersCollection.InsertOneAsync(user, cancellationToken).ConfigureAwait(false);
 
             return IdentityResult.Success;
@@ -71,6 +73,8 @@ namespace Dnx.Identity.MongoDB
             {
                 throw new ArgumentNullException(nameof(user));
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             user.Delete();
 
@@ -89,6 +93,8 @@ namespace Dnx.Identity.MongoDB
                 throw new ArgumentNullException(nameof(userId));
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             var query = Builders<TUser>.Filter.And(
                 Builders<TUser>.Filter.Eq(u => u.Id, userId),
                 Builders<TUser>.Filter.Eq(u => u.DeletedOn, null)
@@ -103,6 +109,8 @@ namespace Dnx.Identity.MongoDB
             {
                 throw new ArgumentNullException(nameof(normalizedUserName));
             }
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             var query = Builders<TUser>.Filter.And(
                 Builders<TUser>.Filter.Eq(u => u.NormalizedUserName, normalizedUserName),
