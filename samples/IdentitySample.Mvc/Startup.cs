@@ -11,7 +11,7 @@ using System.IO;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using MongoDB.Driver;
-using Dnx.Identity.MongoDB;
+using AspNetCore.Identity.MongoDB;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.DataProtection;

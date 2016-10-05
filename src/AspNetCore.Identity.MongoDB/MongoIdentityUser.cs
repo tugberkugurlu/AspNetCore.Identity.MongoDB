@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Dnx.Identity.MongoDB.Models;
+using AspNetCore.Identity.MongoDB.Models;
 using System.Security.Claims;
 
-namespace Dnx.Identity.MongoDB
+namespace AspNetCore.Identity.MongoDB
 {
     public class MongoIdentityUser
     {

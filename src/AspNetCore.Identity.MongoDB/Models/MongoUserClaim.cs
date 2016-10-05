@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 
-namespace Dnx.Identity.MongoDB.Models
+namespace AspNetCore.Identity.MongoDB.Models
 {
     public class MongoUserClaim : IEquatable<MongoUserClaim>, IEquatable<Claim>
     {

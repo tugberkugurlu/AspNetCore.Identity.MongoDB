@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Identity;
 
-namespace Dnx.Identity.MongoDB.Models
+namespace AspNetCore.Identity.MongoDB.Models
 {
     public class MongoUserLogin : IEquatable<MongoUserLogin>, IEquatable<UserLoginInfo>
     {

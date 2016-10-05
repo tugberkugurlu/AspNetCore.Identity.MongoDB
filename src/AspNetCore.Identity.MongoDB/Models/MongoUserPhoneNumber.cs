@@ -1,4 +1,4 @@
-﻿namespace Dnx.Identity.MongoDB.Models
+﻿namespace AspNetCore.Identity.MongoDB.Models
 {
     public class MongoUserPhoneNumber : MongoUserContactRecord
     {

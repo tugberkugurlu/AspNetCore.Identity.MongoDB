@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using IdentitySample.Models.ManageViewModels;
 using IdentitySample.Services;
-using Dnx.Identity.MongoDB;
+using AspNetCore.Identity.MongoDB;
 
 namespace IdentitySamples.Controllers
 {
