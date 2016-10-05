@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using IdentitySample.Models.AccountViewModels;
 using IdentitySample.Services;
-using Dnx.Identity.MongoDB;
+using AspNetCore.Identity.MongoDB;
 
 namespace IdentitySample.Controllers
 {

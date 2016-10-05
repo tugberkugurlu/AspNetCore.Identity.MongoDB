@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dnx.Identity.MongoDB.Models
+namespace AspNetCore.Identity.MongoDB.Models
 {
     public class FutureOccurrence : Occurrence
     {

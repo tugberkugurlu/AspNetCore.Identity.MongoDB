@@ -1,11 +1,11 @@
-using Dnx.Identity.MongoDB.Models;
+using AspNetCore.Identity.MongoDB.Models;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using System;
 using System.Threading;
 
-namespace Dnx.Identity.MongoDB
+namespace AspNetCore.Identity.MongoDB
 {
     internal static class MongoConfig
     {
@@ -71,7 +71,7 @@ namespace Dnx.Identity.MongoDB
                 new CamelCaseElementNameConvention(),
             };
 
-            ConventionRegistry.Register("Dnx.Identity.MongoDB", pack, IsConventionApplicable);
+            ConventionRegistry.Register("AspNetCore.Identity.MongoDB", pack, IsConventionApplicable);
         }
 
         private static bool IsConventionApplicable(Type type)
