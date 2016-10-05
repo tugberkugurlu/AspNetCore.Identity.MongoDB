@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Dnx.Identity.MongoDB.Models;
-using System.Globalization;
 using System.Security.Claims;
 
 namespace Dnx.Identity.MongoDB
