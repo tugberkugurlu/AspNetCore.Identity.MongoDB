@@ -12,7 +12,7 @@
     "dependencies": {
         "Microsoft.AspNetCore.Identity": "1.0.0",
         "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
-        "MongoDB.Driver": "2.3.0-rc1"
+        "MongoDB.Driver": "2.3.0"
     },
     "frameworks": {
         "netstandard1.5": {
