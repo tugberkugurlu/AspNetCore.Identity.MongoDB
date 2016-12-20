@@ -35,7 +35,7 @@ namespace AspNetCore.Identity.MongoDB
             MongoConfig.EnsureConfigured();
         }
 
-        public MongoUserStore(IMongoDatabase database, ILoggerFactory loggerFactory)
+        public MongoUserStore(IMongoDatabase database, ILoggerFactory loggerFactory, string userCollectionName = "users")
         {
             if(database == null)
             {
@@ -47,7 +47,7 @@ namespace AspNetCore.Identity.MongoDB
                 throw new ArgumentNullException(nameof(loggerFactory));
             }
 
-            _usersCollection = database.GetCollection<TUser>("users");
+            _usersCollection = database.GetCollection<TUser>(userCollectionName);
             _logger = loggerFactory.CreateLogger(GetType().Name);
 
             EnsureIndicesCreatedAsync().GetAwaiter().GetResult();
