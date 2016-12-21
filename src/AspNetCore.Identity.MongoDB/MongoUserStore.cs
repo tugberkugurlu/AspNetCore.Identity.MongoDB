@@ -35,7 +35,11 @@ namespace AspNetCore.Identity.MongoDB
             MongoConfig.EnsureConfigured();
         }
 
-        public MongoUserStore(IMongoDatabase database, ILoggerFactory loggerFactory, string userCollectionName = "users")
+        public MongoUserStore(IMongoDatabase database, ILoggerFactory loggerFactory) 
+            : this (database, loggerFactory, "users")
+        { }
+
+        public MongoUserStore(IMongoDatabase database, ILoggerFactory loggerFactory, string userCollectionName)
         {
             if(database == null)
             {
