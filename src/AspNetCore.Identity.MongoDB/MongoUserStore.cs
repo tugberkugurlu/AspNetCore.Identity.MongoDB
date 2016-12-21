@@ -50,6 +50,11 @@ namespace AspNetCore.Identity.MongoDB
             {
                 throw new ArgumentNullException(nameof(loggerFactory));
             }
+            
+            if (userCollectionName == null)
+            {
+                throw new ArgumentNullException(nameof(userCollectionName));
+            }
 
             _usersCollection = database.GetCollection<TUser>(userCollectionName);
             _logger = loggerFactory.CreateLogger(GetType().Name);
