@@ -13,6 +13,7 @@ You can find some samples under [./samples](./samples) folder and each of the sa
 ## Contributors
 
  - [Matt Whetton](https://github.com/mattwhetton)
+ - [Soren Zand](https://github.com/SorenZ)
 
 ## License
 
