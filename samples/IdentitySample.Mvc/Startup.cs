@@ -32,14 +32,14 @@ namespace IdentitySample
         {
             // Set up configuration sources.
             var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
-            if (env.IsDevelopment())
+            if (env.IsDevelopment() )
             {
                 // For more details on using the user secret store see http://go.microsoft.com/fwlink/?LinkID=532709
-                builder.AddUserSecrets();
+                builder.AddUserSecrets("userSecretsId"); // https://github.com/aspnet/UserSecrets/issues/62
             }
 
             builder.AddEnvironmentVariables();

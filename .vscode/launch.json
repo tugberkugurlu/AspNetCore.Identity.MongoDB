@@ -8,7 +8,7 @@
             "preLaunchTask": "build",
             "program": "${workspaceRoot}\\samples\\IdentitySample.Mvc\\bin\\Debug\\netcoreapp1.0\\IdentitySample.Mvc.dll",
             "args": [],
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceRoot}\\samples\\IdentitySample.Mvc",
             "stopAtEntry": false,
             "internalConsoleOptions": "openOnSessionStart",
             "launchBrowser": {
