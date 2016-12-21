@@ -28,7 +28,8 @@
   },
   "buildOptions": {
     "emitEntryPoint": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "debugType": "portable"
   },
   "frameworks": {
     "netcoreapp1.0": {

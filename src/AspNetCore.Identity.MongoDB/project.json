@@ -17,5 +17,8 @@
     "frameworks": {
         "net451": { },
         "netstandard1.5": { "imports": "dnxcore50" }
+    },
+    "buildOptions": {
+        "debugType": "portable"
     }
 }
