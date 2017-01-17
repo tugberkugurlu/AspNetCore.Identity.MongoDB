@@ -33,7 +33,7 @@ namespace AspNetCore.Identity.MongoDB
                 throw new ArgumentNullException(nameof(userName));
             }
 
-            Id = GenerateId(userName);
+            // Id = GenerateId(userName); // Id will generate by mongodb driver
             UserName = userName;
             CreatedOn = new Occurrence();
 

@@ -4,6 +4,9 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using System;
 using System.Threading;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace AspNetCore.Identity.MongoDB
 {
@@ -34,7 +37,9 @@ namespace AspNetCore.Identity.MongoDB
             BsonClassMap.RegisterClassMap<MongoIdentityUser>(cm =>
             {
                 cm.AutoMap();
-                cm.SetIdMember(cm.GetMemberMap(c => c.Id));
+                cm.MapIdMember(c => c.Id)
+                    .SetSerializer(new StringSerializer(BsonType.ObjectId))
+                    .SetIdGenerator(StringObjectIdGenerator.Instance);
                 cm.MapCreator(user => new MongoIdentityUser(user.UserName, user.Email));
             });
 
