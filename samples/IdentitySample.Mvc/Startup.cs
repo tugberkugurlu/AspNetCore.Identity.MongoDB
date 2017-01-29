@@ -60,9 +60,8 @@ namespace IdentitySample
                 var options = provider.GetService<IOptions<MongoDbSettings>>();
                 var client = new MongoClient(options.Value.ConnectionString);
                 var database = client.GetDatabase(options.Value.DatabaseName);
-                var loggerFactory = provider.GetService<ILoggerFactory>();
 
-                return new MongoUserStore<MongoIdentityUser>(database, loggerFactory);
+                return new MongoUserStore<MongoIdentityUser>(database);
             });
 
             services.Configure<IdentityOptions>(options =>
