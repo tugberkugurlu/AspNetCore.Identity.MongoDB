@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace AspNetCore.Identity.MongoDB.Models
 {
+    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local", Justification = "MongoDB serialization needs private setters")]
     public class MongoUserClaim : IEquatable<MongoUserClaim>, IEquatable<Claim>
     {
         public MongoUserClaim(Claim claim)

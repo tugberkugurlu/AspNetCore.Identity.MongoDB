@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using AspNetCore.Identity.MongoDB.Models;
 using System.Security.Claims;
 using MongoDB.Bson;
 
 namespace AspNetCore.Identity.MongoDB
 {
+    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local", Justification = "MongoDB serialization needs private setters")]
     public class MongoIdentityUser
     {
         private readonly List<MongoUserClaim> _claims;

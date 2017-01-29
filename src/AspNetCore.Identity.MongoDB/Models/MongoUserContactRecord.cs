@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AspNetCore.Identity.MongoDB.Models
 {
+    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local", Justification = "MongoDB serialization needs private setters")]
     public abstract class MongoUserContactRecord : IEquatable<MongoUserEmail>
     {
         protected MongoUserContactRecord(string value)

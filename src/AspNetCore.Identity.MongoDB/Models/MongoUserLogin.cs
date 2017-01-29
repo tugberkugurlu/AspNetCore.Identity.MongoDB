@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Identity;
 
 namespace AspNetCore.Identity.MongoDB.Models
 {
+    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local", Justification = "MongoDB serialization needs private setters")]
     public class MongoUserLogin : IEquatable<MongoUserLogin>, IEquatable<UserLoginInfo>
     {
         public MongoUserLogin(UserLoginInfo loginInfo)
