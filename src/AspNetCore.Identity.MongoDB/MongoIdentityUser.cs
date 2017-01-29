@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using AspNetCore.Identity.MongoDB.Models;
 using System.Security.Claims;
+using MongoDB.Bson;
 
 namespace AspNetCore.Identity.MongoDB
 {
@@ -33,6 +34,7 @@ namespace AspNetCore.Identity.MongoDB
                 throw new ArgumentNullException(nameof(userName));
             }
 
+            Id = ObjectId.GenerateNewId().ToString();
             UserName = userName;
             CreatedOn = new Occurrence();
 
