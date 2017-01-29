@@ -60,8 +60,8 @@ fi
 
 outputDir=${OUTPUTFOLDER%%/}/apps
 packagesOutputDir=${OUTPUTFOLDER%%/}/packages
-projectDirectories=${scriptsDir%%/}/src/*/
-projectJsonFiles=${projectDirectories%%/}/project.json
+testProjectRootDirectories=(${scriptsDir%%/}/tests/*/)
+projectRootDirectories=(${scriptsDir%%/}/src/*/ ${scriptsDir%%/}/samples/*/ ${scriptsDir%%/}/tests/*/)
 
 # clean OUTPUTFOLDER
 if [ -d "$OUTPUTFOLDER" ]; then
@@ -69,19 +69,17 @@ if [ -d "$OUTPUTFOLDER" ]; then
 fi
 
 # restore
-for projectFilePath in $projectJsonFiles
+for projectDirectory in "${projectRootDirectories[@]}"
 do
-    projectDirectory=$(dirname "${projectFilePath}")
-
     # restore
     echo "starting to restore for $projectDirectory"
     dotnet restore $projectDirectory || exit 1
 done
 
 # build, publish
-for projectFilePath in $projectJsonFiles
+for projectDirectory in "${projectRootDirectories[@]}"
 do
-    projectDirectory=$(dirname "${projectFilePath}")
+    projectFilePath="${projectDirectory%%/}/project.json"
 
     # build
     echo "starting to build $projectFilePath"
@@ -96,7 +94,7 @@ do
             echo "$projectDirectory is publishable but publish is disabled"
         else
             echo "starting to publish for $projectDirectory"
-            dotnet publish $projectDirectory --configuration $CONFIGURATION --output $outputDir --runtime active --no-build || exit 1    
+            dotnet publish $projectDirectory --configuration $CONFIGURATION --output $outputDir --runtime active --no-build || exit 1
         fi
     else
         echo "$projectFilePath is not publisable. Looking to see if it should be packed"
@@ -108,4 +106,13 @@ do
             dotnet pack $projectDirectory --configuration $CONFIGURATION --output $packagesOutputDir --no-build || exit 1
         fi
     fi
+done
+
+for projectDirectory in "${testProjectRootDirectories[@]}"
+do
+    projectFilePath="${projectDirectory%%/}/project.json"
+
+    # test
+    echo "starting to test $projectFilePath for configration $CONFIGURATION"
+    dotnet test $projectFilePath --configuration $CONFIGURATION --no-build || exit 1
 done

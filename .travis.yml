@@ -1,6 +1,8 @@
 sudo: required
 dist: trusty
 language: csharp
+services:
+  - mongodb
 addons:
   artifacts: true
 env:
