@@ -27,6 +27,8 @@ ProjectSection(SolutionItems) = preProject
 	scripts\set-build-version.sh = scripts\set-build-version.sh
 EndProjectSection
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AspNetCore.Identity.MongoDB.Tests", "tests\AspNetCore.Identity.MongoDB.Tests\AspNetCore.Identity.MongoDB.Tests.xproj", "{0C0D868B-510B-40B8-BE39-917287C241F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{325AAEE6-2A0C-41CC-888F-AF7644E946FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{325AAEE6-2A0C-41CC-888F-AF7644E946FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{325AAEE6-2A0C-41CC-888F-AF7644E946FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C0D868B-510B-40B8-BE39-917287C241F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C0D868B-510B-40B8-BE39-917287C241F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C0D868B-510B-40B8-BE39-917287C241F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C0D868B-510B-40B8-BE39-917287C241F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,6 +10,16 @@ MongoDB data store adaptor for [ASP.NET Core Identity](https://github.com/aspnet
 
 You can find some samples under [./samples](./samples) folder and each of the sample contain a README file on its own with the instructions showing how to run them.
 
+### Tests
+
+In order to be able to run the tests, you need to have MongoDB up and running on `localhost:27017`. You can easily do this by running the below Docker command:
+
+```bash
+docker run --name some-mongo -d -p "27017:27017" mongo:3
+```
+
+After that, you can run the tests through your prefered test runner (e.g. JetBrains Rider test runner) or by invoking the `dotnet test` command under the test project directory.
+
 ## Contributors
 
  - [Matt Whetton](https://github.com/mattwhetton)
