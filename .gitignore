@@ -237,3 +237,6 @@ _Pvt_Extensions
 
 # ignore .exes
 *.exe
+
+.idea/
+.DS_STORE
