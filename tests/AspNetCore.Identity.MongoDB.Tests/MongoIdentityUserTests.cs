@@ -9,7 +9,7 @@ using Xunit;
 
 namespace AspNetCore.Identity.MongoDB.Tests
 {
-    public class MongoIdentityUserSubclassTests
+    public class MongoIdentityUserTests
     {
         [Fact]
         public async Task MongoIdentityUser_CanBeSavedAndRetrieved_WhenItBecomesTheSubclass()
