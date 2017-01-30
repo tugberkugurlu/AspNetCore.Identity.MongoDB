@@ -10,8 +10,8 @@ namespace AspNetCore.Identity.MongoDB
     [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local", Justification = "MongoDB serialization needs private setters")]
     public class MongoIdentityUser
     {
-        private readonly List<MongoUserClaim> _claims;
-        private readonly List<MongoUserLogin> _logins;
+        private List<MongoUserClaim> _claims;
+        private List<MongoUserLogin> _logins;
 
         public MongoIdentityUser(string userName, string email) : this(userName)
         {
@@ -40,8 +40,8 @@ namespace AspNetCore.Identity.MongoDB
             UserName = userName;
             CreatedOn = new Occurrence();
 
-            _claims = new List<MongoUserClaim>();
-            _logins = new List<MongoUserLogin>();
+            EnsureClaimsIsSet();
+            EnsureLoginsIsSet();
         }
 
         public string Id { get; private set; }
@@ -58,11 +58,14 @@ namespace AspNetCore.Identity.MongoDB
         {
             get
             {
+                EnsureClaimsIsSet();
                 return _claims;
             }
 
+            // ReSharper disable once UnusedMember.Local, MongoDB serialization needs private setters
             private set
             {
+                EnsureClaimsIsSet();
                 if (value != null)
                 {
                     _claims.AddRange(value);
@@ -74,11 +77,14 @@ namespace AspNetCore.Identity.MongoDB
         {
             get
             {
+                EnsureLoginsIsSet();
                 return _logins;
             }
 
+            // ReSharper disable once UnusedMember.Local, MongoDB serialization needs private setters
             private set
             {
+                EnsureLoginsIsSet();
                 if (value != null)
                 {
                     _logins.AddRange(value);
@@ -230,9 +236,20 @@ namespace AspNetCore.Identity.MongoDB
             DeletedOn = new Occurrence();
         }
 
-        private static string GenerateId(string userName)
+        private void EnsureClaimsIsSet()
         {
-            return userName.ToLower();
+            if (_claims == null)
+            {
+                _claims = new List<MongoUserClaim>();
+            }
+        }
+
+        private void EnsureLoginsIsSet()
+        {
+            if (_logins == null)
+            {
+                _logins = new List<MongoUserLogin>();
+            }
         }
     }
 }
