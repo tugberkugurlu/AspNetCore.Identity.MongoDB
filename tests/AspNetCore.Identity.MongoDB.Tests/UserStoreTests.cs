@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using AspNetCore.Identity.MongoDB.Tests.Common;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Driver;
-using MongoDB.Testing.Mongo;
 using Xunit;
 
 namespace AspNetCore.Identity.MongoDB.Tests
