@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,6 +47,28 @@ namespace AspNetCore.Identity.MongoDB.Tests
                 Assert.NotNull(retrievedLoginProvider);
                 Assert.Equal(providerKey, retrievedLoginProvider.ProviderKey);
                 Assert.Equal(displayName, retrievedLoginProvider.ProviderDisplayName);
+            }
+        }
+
+        [Fact]
+        public async Task MongoIdentityUser_ShouldSaveAndRetrieveTheFutureOccuranceCorrectly()
+        {
+            var lockoutEndDate = new DateTime(2017, 2, 1, 0, 0, 0, DateTimeKind.Utc).AddTicks(8996910);
+            var user = new MongoIdentityUser(TestUtils.RandomString(10));
+            user.LockUntil(lockoutEndDate);
+
+            using (var dbProvider = MongoDbServerTestUtils.CreateDatabase())
+            {
+                var store = new MongoUserStore<MongoIdentityUser>(dbProvider.Database);
+
+                // ACT
+                var result = await store.CreateAsync(user, CancellationToken.None);
+
+                // ASSERT
+                Assert.True(result.Succeeded);
+                var collection = dbProvider.Database.GetCollection<MongoIdentityUser>(Constants.DefaultCollectionName);
+                var retrievedUser = await collection.FindByIdAsync(user.Id);
+                Assert.Equal(user.LockoutEndDate, retrievedUser.LockoutEndDate);
             }
         }
 
