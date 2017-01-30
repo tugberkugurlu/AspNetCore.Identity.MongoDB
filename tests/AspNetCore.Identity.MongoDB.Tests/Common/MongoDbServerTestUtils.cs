@@ -28,7 +28,7 @@ namespace AspNetCore.Identity.MongoDB.Tests.Common
                 {
                     _mongoTestServer.Dispose();
                 }
-                catch(ObjectDisposedException)
+                catch(AggregateException ex) when(ex.GetBaseException().GetType() == typeof(ObjectDisposedException))
                 {
                     /*
                         It's for some reason, disposing MongoTestServer can give us ObjectDisposedException. I have only
