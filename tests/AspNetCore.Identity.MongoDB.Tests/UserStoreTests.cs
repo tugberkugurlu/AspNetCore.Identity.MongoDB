@@ -14,16 +14,16 @@ namespace AspNetCore.Identity.MongoDB.Tests
         public async Task CreateAsync_ShouldCreateUser()
         {
             // ARRANGE
-            using (var testServer = MongoTestServer.Setup(27017))
+            using (var dbProvider = MongoDbServerTestUtils.CreateDatabase())
             {
-                var userStore = new MongoUserStore<MongoIdentityUser>(testServer.Database) as IUserStore<MongoIdentityUser>;
+                var userStore = new MongoUserStore<MongoIdentityUser>(dbProvider.Database) as IUserStore<MongoIdentityUser>;
                 var user = new MongoIdentityUser(TestUtils.RandomString(10));
 
                 // ACT
                 await userStore.CreateAsync(user, CancellationToken.None);
 
                 // ASSERT
-                var collection = testServer.Database.GetDefaultCollection();
+                var collection = dbProvider.Database.GetDefaultCollection();
                 var filter = Builders<MongoIdentityUser>.Filter.Eq(x => x.Id, user.Id);
                 var retrievedUser = await collection.Find(filter).FirstOrDefaultAsync();
 
