@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using AspNetCore.Identity.MongoDB.Models;
@@ -18,7 +19,8 @@ namespace AspNetCore.Identity.MongoDB.Tests
             var loginProvider = TestUtils.RandomString(5);
             var providerKey = TestUtils.RandomString(5);
             var displayName = TestUtils.RandomString(5);
-            var user = new MyIdentityUser(username);
+            var myCustomThing = TestUtils.RandomString(10);
+            var user = new MyIdentityUser(username) { MyCustomThing = myCustomThing };
             user.AddClaim(new Claim(ClaimTypes.Country, countryName));
             user.AddLogin(new MongoUserLogin(new UserLoginInfo(loginProvider, providerKey, displayName)));
 
@@ -34,6 +36,16 @@ namespace AspNetCore.Identity.MongoDB.Tests
                 var retrievedUser = await store.FindByIdAsync(user.Id, CancellationToken.None);
                 Assert.NotNull(retrievedUser);
                 Assert.Equal(username, retrievedUser.UserName);
+                Assert.Equal(myCustomThing, retrievedUser.MyCustomThing);
+
+                var countryClaim = retrievedUser.Claims.FirstOrDefault(x => x.ClaimType == ClaimTypes.Country);
+                Assert.NotNull(countryClaim);
+                Assert.Equal(countryName, countryClaim.ClaimValue);
+
+                var retrievedLoginProvider = retrievedUser.Logins.FirstOrDefault(x => x.LoginProvider == loginProvider);
+                Assert.NotNull(retrievedLoginProvider);
+                Assert.Equal(providerKey, retrievedLoginProvider.ProviderKey);
+                Assert.Equal(displayName, retrievedLoginProvider.ProviderDisplayName);
             }
         }
 
