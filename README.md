@@ -24,6 +24,7 @@ After that, you can run the tests through your prefered test runner (e.g. JetBra
 
  - [Matt Whetton](https://github.com/mattwhetton)
  - [Soren Zand](https://github.com/SorenZ)
+ - [Rethabile Mokoena](https://github.com/rm2k)
 
 ## License
 
