@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace AspNetCore.Identity.MongoDB.Models
 {
+    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local", Justification = "MongoDB serialization needs private setters")]
     public class Occurrence
     {
         public Occurrence() : this(DateTime.UtcNow)
@@ -13,7 +15,6 @@ namespace AspNetCore.Identity.MongoDB.Models
             Instant = occuranceInstantUtc;
         }
 
-        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
         public DateTime Instant { get; private set; }
 
         protected bool Equals(Occurrence other)
@@ -30,9 +31,9 @@ namespace AspNetCore.Identity.MongoDB.Models
             return Equals((Occurrence) obj);
         }
 
+        [SuppressMessage("ReSharper", "NonReadonlyMemberInGetHashCode", Justification = "MongoDB serialization needs private setters")]
         public override int GetHashCode()
         {
-            // ReSharper disable once NonReadonlyMemberInGetHashCode
             return Instant.GetHashCode();
         }
     }
