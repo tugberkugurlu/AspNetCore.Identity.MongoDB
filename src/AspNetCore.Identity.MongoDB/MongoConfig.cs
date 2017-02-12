@@ -4,7 +4,6 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Conventions;
 using System;
 using System.Threading;
-using AspNetCore.Identity.MongoDB.Internal;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.IdGenerators;
@@ -38,9 +37,6 @@ namespace AspNetCore.Identity.MongoDB
             BsonClassMap.RegisterClassMap<MongoIdentityUser>(cm =>
             {
                 cm.AutoMap();
-                // cm.MapMember(c => c.CreatedOn).SetSerializer(new OccurrenceSerializer());
-                // cm.MapMember(c => c.DeletedOn).SetSerializer(new OccurrenceSerializer());
-                cm.MapMember(c => c.LockoutEndDate).SetSerializer(new FutureOccurrenceSerializer());
                 cm.MapIdMember(c => c.Id)
                     .SetSerializer(new StringSerializer(BsonType.ObjectId))
                     .SetIdGenerator(StringObjectIdGenerator.Instance);
@@ -63,7 +59,6 @@ namespace AspNetCore.Identity.MongoDB
             BsonClassMap.RegisterClassMap<MongoUserContactRecord>(cm =>
             {
                 cm.AutoMap();
-                // cm.MapMember(c => c.ConfirmationRecord).SetSerializer(new ConfirmationOccurrenceSerializer());
             });
 
             BsonClassMap.RegisterClassMap<MongoUserPhoneNumber>(cm =>
@@ -76,6 +71,13 @@ namespace AspNetCore.Identity.MongoDB
             {
                 cm.AutoMap();
                 cm.MapCreator(l => new MongoUserLogin(new UserLoginInfo(l.LoginProvider, l.ProviderKey, l.ProviderDisplayName)));
+            });
+
+            BsonClassMap.RegisterClassMap<Occurrence>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapCreator(cr => new Occurrence(cr.Instant));
+                cm.MapMember(x => x.Instant).SetSerializer(new DateTimeSerializer(DateTimeKind.Utc, BsonType.Document));
             });
         }
 
