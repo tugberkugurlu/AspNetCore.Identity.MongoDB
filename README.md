@@ -1,6 +1,6 @@
 # AspNetCore.Identity.MongoDB [![Build Status](https://travis-ci.org/tugberkugurlu/AspNetCore.Identity.MongoDB.svg?branch=master)](https://travis-ci.org/tugberkugurlu/AspNetCore.Identity.MongoDB)
 
-MongoDB data store adaptor for [ASP.NET Core Identity](https://github.com/aspnet/Identity), which allows you to build ASP.NET Core web applications, including membership, login, and user data. With this library, you can store your user's membership related data on MongoDB.
+[MongoDB](https://www.mongodb.com/) data store adaptor for [ASP.NET Core Identity](https://github.com/aspnet/Identity), which allows you to build ASP.NET Core web applications, including membership, login, and user data. With this library, you can store your user's membership related data on MongoDB.
 
 ## Using the Library
 
