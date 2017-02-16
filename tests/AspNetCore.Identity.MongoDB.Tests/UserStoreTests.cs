@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using AspNetCore.Identity.MongoDB.Tests.Common;
 using Microsoft.AspNetCore.Identity;
-using MongoDB.Driver;
 using Xunit;
 
 namespace AspNetCore.Identity.MongoDB.Tests
@@ -23,8 +22,7 @@ namespace AspNetCore.Identity.MongoDB.Tests
 
                 // ASSERT
                 var collection = dbProvider.Database.GetDefaultCollection();
-                var filter = Builders<MongoIdentityUser>.Filter.Eq(x => x.Id, user.Id);
-                var retrievedUser = await collection.Find(filter).FirstOrDefaultAsync();
+                var retrievedUser = await collection.FindByIdAsync(user.Id);
 
                 Assert.NotNull(retrievedUser);
                 Assert.Equal(user.UserName, retrievedUser.UserName);

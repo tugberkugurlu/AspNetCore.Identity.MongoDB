@@ -1,49 +1,34 @@
 ﻿using System;
 using MongoDB.Driver;
-using MongoDB.Testing.Mongo;
 
 namespace AspNetCore.Identity.MongoDB.Tests.Common
 {
     internal static class MongoDbServerTestUtils
     {
-        public static DisposableDatabase CreateDatabase() =>
-            new DisposableDatabase(MongoTestServer.Setup(27017));
-        
-        internal class DisposableDatabase : IDisposable
+        public static DisposableDatabase CreateDatabase() => new DisposableDatabase();
+
+        public class DisposableDatabase : IDisposable
         {
-            private readonly MongoTestServer _mongoTestServer;
+            private bool _disposed;
+            private readonly IMongoDatabase _database;
+            private readonly MongoClient _mongoClient;
 
-            public DisposableDatabase(MongoTestServer mongoTestServer)
+            public DisposableDatabase()
             {
-                if (mongoTestServer == null) throw new ArgumentNullException(nameof(mongoTestServer));
+                var databaseName = Guid.NewGuid().ToString("N");
 
-                _mongoTestServer = mongoTestServer;
+                _mongoClient = new MongoClient("mongodb://localhost:27017");
+                _database = _mongoClient.GetDatabase(databaseName);
             }
 
-            public IMongoDatabase Database => _mongoTestServer.Database;
+            public IMongoDatabase Database => _database;
 
             public void Dispose()
             {
-                try
+                if (_disposed == false)
                 {
-                    _mongoTestServer.Dispose();
-                }
-                catch(AggregateException ex) when(ex.GetBaseException().GetType() == typeof(ObjectDisposedException))
-                {
-                    /*
-                        It's for some reason, disposing MongoTestServer can give us ObjectDisposedException. I have only
-                        seen this happening on Travis CI. Let's swallow this for now.
-                        
-                          System.AggregateException : One or more errors occurred. (Cannot access a disposed object.
-                          Object name: 'SingleServerCluster'.)
-                          ---- System.ObjectDisposedException : Cannot access a disposed object.
-                          Object name: 'SingleServerCluster'.
-                          Stack Trace:
-                               at System.Threading.Tasks.Task.ThrowIfExceptional(Boolean includeTaskCanceledExceptions)
-                               at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)
-                               at MongoDB.Testing.Mongo.DefaultRandomMongoDatabase.Dispose()
-                               at MongoDB.Testing.Mongo.MongoTestServer.Dispose()
-                    */
+                    _mongoClient.DropDatabase(_database.DatabaseNamespace.DatabaseName);
+                    _disposed = true;
                 }
             }
         }

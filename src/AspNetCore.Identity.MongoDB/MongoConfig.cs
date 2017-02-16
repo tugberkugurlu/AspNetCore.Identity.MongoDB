@@ -40,6 +40,7 @@ namespace AspNetCore.Identity.MongoDB
                 cm.MapIdMember(c => c.Id)
                     .SetSerializer(new StringSerializer(BsonType.ObjectId))
                     .SetIdGenerator(StringObjectIdGenerator.Instance);
+
                 cm.MapCreator(user => new MongoIdentityUser(user.UserName, user.Email));
             });
 
@@ -55,6 +56,11 @@ namespace AspNetCore.Identity.MongoDB
                 cm.MapCreator(cr => new MongoUserEmail(cr.Value));
             });
 
+            BsonClassMap.RegisterClassMap<MongoUserContactRecord>(cm =>
+            {
+                cm.AutoMap();
+            });
+
             BsonClassMap.RegisterClassMap<MongoUserPhoneNumber>(cm =>
             {
                 cm.AutoMap();
@@ -65,6 +71,13 @@ namespace AspNetCore.Identity.MongoDB
             {
                 cm.AutoMap();
                 cm.MapCreator(l => new MongoUserLogin(new UserLoginInfo(l.LoginProvider, l.ProviderKey, l.ProviderDisplayName)));
+            });
+
+            BsonClassMap.RegisterClassMap<Occurrence>(cm =>
+            {
+                cm.AutoMap();
+                cm.MapCreator(cr => new Occurrence(cr.Instant));
+                cm.MapMember(x => x.Instant).SetSerializer(new DateTimeSerializer(DateTimeKind.Utc, BsonType.Document));
             });
         }
 
