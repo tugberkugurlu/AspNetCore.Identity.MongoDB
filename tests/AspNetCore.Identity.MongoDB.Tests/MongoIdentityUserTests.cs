@@ -7,6 +7,7 @@ using AspNetCore.Identity.MongoDB.Models;
 using AspNetCore.Identity.MongoDB.Tests.Common;
 using Microsoft.AspNetCore.Identity;
 using Xunit;
+using AspNetCore.Identity.MongoDB;
 
 namespace AspNetCore.Identity.MongoDB.Tests
 {
