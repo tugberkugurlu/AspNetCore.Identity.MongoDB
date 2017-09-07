@@ -1,6 +1,6 @@
 {
     "projects": ["src", "samples", "tests"],
     "sdk": {
-        "version": "dotnet-dev-2.1.0-preview1-006330"
+        "version": "2.0.0"
     }
 }
