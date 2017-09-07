@@ -23,10 +23,10 @@ fi
 
 scriptsDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 rootDir="$(dirname "$scriptsDir")"
-projectFiles=$rootDir/src/**/AspNetCore.Identity.MongoDB.csproj
+projectFiles=$rootDir/src/**/project.json
 
 for projectFile in $projectFiles
 do
     echo "patching $projectFile with version $VERSIONNUMBER"
-    echo $(jq ". + { \<Version\>$VERSIONNUMBER\<\/Version\> }" <<<$(jq 'del(.version)' <<<"$(cat $projectFile)")) > $projectFile 
+    echo $(jq ". + { \"version\": \"$VERSIONNUMBER\" }" <<<$(jq 'del(.version)' <<<"$(cat $projectFile)")) > $projectFile 
 done
