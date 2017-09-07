@@ -61,7 +61,7 @@ fi
 outputDir=${OUTPUTFOLDER%%/}/apps
 packagesOutputDir=${OUTPUTFOLDER%%/}/packages
 testProjectRootDirectories=(${scriptsDir%%/}/tests/*/)
-projectRootDirectories=(${scriptsDir%%/}/src/*/ ${scriptsDir%%/}/samples/*/ ${scriptsDir%%/}/tests/*/)
+projectRootDirectories=(${scriptsDir%%/}/src/*/ ${scriptsDir%%/}/tests/*/)
 
 # clean OUTPUTFOLDER
 if [ -d "$OUTPUTFOLDER" ]; then
