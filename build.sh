@@ -79,7 +79,7 @@ done
 # build, publish
 for projectDirectory in "${projectRootDirectories[@]}"
 do
-    projectFilePath="${projectDirectory%%/}/project.json"
+    projectFilePath="${projectDirectory%%/}/AspNetCore.Identity.MongoDB.csproj"
 
     # build
     echo "starting to build $projectFilePath"
@@ -110,7 +110,7 @@ done
 
 for projectDirectory in "${testProjectRootDirectories[@]}"
 do
-    projectFilePath="${projectDirectory%%/}/project.json"
+    projectFilePath="${projectDirectory%%/}/AspNetCore.Identity.MongoDB.Tests.csproj"
 
     # test
     echo "starting to test $projectFilePath for configration $CONFIGURATION"
