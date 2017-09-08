@@ -61,7 +61,8 @@ fi
 outputDir=${OUTPUTFOLDER%%/}/apps
 packagesOutputDir=${OUTPUTFOLDER%%/}/packages
 testProjectRootDirectories=(${scriptsDir%%/}/tests/*/)
-projectRootDirectories=(${scriptsDir%%/}/src/*/ ${scriptsDir%%/}/tests/*/)
+projectRootDirectories=(${scriptsDir%%/}/src/*/)
+#${scriptsDir%%/}/tests/*/
 
 # clean OUTPUTFOLDER
 if [ -d "$OUTPUTFOLDER" ]; then
@@ -86,7 +87,7 @@ do
     dotnet build $projectFilePath --configuration $CONFIGURATION || exit 1
 
     # publish
-    echo "checking if $projectFilePath is publisable"
+    echo "checking if $projectFilePath is publishable"
     if cat $projectFilePath | grep '"emitEntryPoint": true' &>/dev/null
     then
         if [ -z ${PUBLISH+x} ]
@@ -111,6 +112,10 @@ done
 for projectDirectory in "${testProjectRootDirectories[@]}"
 do
     projectFilePath="${projectDirectory%%/}/AspNetCore.Identity.MongoDB.Tests.csproj"
+	
+	# build
+    echo "starting to build $projectFilePath"
+    dotnet build $projectFilePath --configuration $CONFIGURATION || exit 1
 
     # test
     echo "starting to test $projectFilePath for configration $CONFIGURATION"
