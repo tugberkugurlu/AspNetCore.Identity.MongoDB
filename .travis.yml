@@ -18,7 +18,7 @@ install:
 - sudo touch /etc/apt/sources.list.d/dotnetdev.list
 - echo "deb [arch=amd64] http://apt-mo.trafficmanager.net/repos/dotnet/ trusty main" | sudo tee -a /etc/apt/sources.list.d/dotnetdev.list
 - sudo apt-key adv --keyserver apt-mo.trafficmanager.net --recv-keys 417A0893 && sudo apt-get update
-- sudo apt-get install -y --no-install-recommends dotnet-sdk-2.0.0
+- sudo apt-get install -y --no-install-recommends dotnet-sdk-2.0.0-preview3-006729
 - curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 - sudo apt-get install -y nodejs
 - sudo npm install semver -g
