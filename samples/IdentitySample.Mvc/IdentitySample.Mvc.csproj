@@ -3,7 +3,6 @@
     <Description>Identity sample MVC application on ASP.NET Core</Description>
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' != 'Windows_NT' ">netcoreapp2.0</TargetFrameworks>
-    <UserSecretsId>aspnetcore-b3d20cbe-418e-4bf2-a0f4-57f91d067e07</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
