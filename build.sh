@@ -11,18 +11,8 @@ case $i in
     CONFIGURATION="${i#*=}"
     shift # past argument=value
     ;;
-    -o=*|--outputFolder=*)
-    OUTPUTFOLDER="${i#*=}"
-    shift # past argument=value
-    ;;
     --pack)
     PACK="YES"
-    shift # past argument with no value
-    ;;
-    *)
-    ;;
-    --publish)
-    PUBLISH="YES"
     shift # past argument with no value
     ;;
     *)
@@ -33,9 +23,7 @@ done
 
 echo "BUILD VERSION = ${BUILDVERSION}"
 echo "CONFIGURATION = ${CONFIGURATION}"
-echo "OUTPUT FOLDER = ${OUTPUTFOLDER}"
 echo "PACK          = ${PACK}"
-echo "PUBLISH       = ${PUBLISH}"
 
 if [ -z ${CONFIGURATION+x} ]
 then
@@ -50,74 +38,35 @@ then
 fi
 
 scriptsDir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-artifactsDir=${scriptsDir%%/}/artifacts
-
-if [ -z ${OUTPUTFOLDER+x} ]
-then
-    echo "No output folder is specified, defaulting to $artifactsDir"
-    OUTPUTFOLDER=$artifactsDir
-fi
-
-outputDir=${OUTPUTFOLDER%%/}/apps
-packagesOutputDir=${OUTPUTFOLDER%%/}/packages
 testProjectRootDirectories=(${scriptsDir%%/}/tests/*/)
-projectRootDirectories=(${scriptsDir%%/}/src/*/)
-#${scriptsDir%%/}/tests/*/
 
-# clean OUTPUTFOLDER
-if [ -d "$OUTPUTFOLDER" ]; then
-  rm -rf "$OUTPUTFOLDER"
-fi
-
-# restore
-for projectDirectory in "${projectRootDirectories[@]}"
-do
-    # restore
-    echo "starting to restore for $projectDirectory"
-    dotnet restore $projectDirectory || exit 1
-done
-
-# build, publish
-for projectDirectory in "${projectRootDirectories[@]}"
-do
-    projectFilePath="${projectDirectory%%/}/AspNetCore.Identity.MongoDB.csproj"
-
-    # build
-    echo "starting to build $projectFilePath"
-    dotnet build $projectFilePath --configuration $CONFIGURATION || exit 1
-
-    # publish
-    echo "checking if $projectFilePath is publishable"
-    if cat $projectFilePath | grep '"emitEntryPoint": true' &>/dev/null
-    then
-        if [ -z ${PUBLISH+x} ]
-        then
-            echo "$projectDirectory is publishable but publish is disabled"
-        else
-            echo "starting to publish for $projectDirectory"
-            dotnet publish $projectDirectory --configuration $CONFIGURATION --output $outputDir --runtime active --no-build || exit 1
-        fi
-    else
-        echo "$projectFilePath is not publisable. Looking to see if it should be packed"
-        if [ -z ${PACK+x} ]
-        then
-            echo "Pack is disabled. Skipping pack on $projectDirectory"
-        else
-            echo "starting to pack for $projectDirectory"
-            dotnet pack $projectDirectory --configuration $CONFIGURATION --output $packagesOutputDir --no-build || exit 1
-        fi
-    fi
-done
+dotnet restore $scriptsDir || exit 1
+dotnet clean $scriptsDir --configuration $CONFIGURATION --verbosity normal || exit 1
+dotnet build $scriptsDir --configuration $CONFIGURATION --verbosity normal /property:VersionPrefix=$BUILDVERSION || exit 1
 
 for projectDirectory in "${testProjectRootDirectories[@]}"
 do
-    projectFilePath="${projectDirectory%%/}/AspNetCore.Identity.MongoDB.Tests.csproj"
-	
-	# build
-    echo "starting to build $projectFilePath"
-    dotnet build $projectFilePath --configuration $CONFIGURATION || exit 1
-
-    # test
-    echo "starting to test $projectFilePath for configration $CONFIGURATION"
-    dotnet test $projectFilePath --configuration $CONFIGURATION --no-build || exit 1
+    projectFilePath="${projectDirectory%%/}/*.csproj"
+    numberOfCsprojFiles="${#projectFilePath[@]}"
+    if [ $numberOfCsprojFiles -eq "1" ]
+    then
+        if cat $projectFilePath | grep 'DotNetCliToolReference' | grep 'xunit' &>/dev/null
+        then
+            testDirectoryName=$(dirname "${projectFilePath}")
+            echo "starting to test $testDirectoryName for configration $CONFIGURATION"
+            (cd $testDirectoryName && dotnet xunit -nobuild -configuration $CONFIGURATION) || exit 1
+        else
+            echo "$projectFilePath is not testable, skipping"
+        fi
+    else
+        echo "There are $numberOfCsprojFiles csproj file(s) for $projectFilePath, skipping testing that"
+    fi
 done
+
+if [ -z ${PACK+x} ]
+then
+    echo "Pack is disabled and the pack process is skipped"
+else
+    echo "starting to pack under $scriptsDir"
+    dotnet pack $scriptsDir --no-build --configuration $CONFIGURATION --verbosity normal /property:VersionPrefix=$BUILDVERSION || exit 1
+fi
