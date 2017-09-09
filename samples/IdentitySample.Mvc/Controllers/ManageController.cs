@@ -1,12 +1,12 @@
 using System.Linq;
 using System.Threading.Tasks;
+using IdentitySample.Models;
+using IdentitySample.Models.ManageViewModels;
+using IdentitySample.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using IdentitySample.Models.ManageViewModels;
-using IdentitySample.Services;
-using AspNetCore.Identity.MongoDB;
 
 namespace IdentitySamples.Controllers
 {
@@ -14,15 +14,15 @@ namespace IdentitySamples.Controllers
     [Authorize]
     public class ManageController : Controller
     {
-        private readonly UserManager<MongoIdentityUser> _userManager;
-        private readonly SignInManager<MongoIdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
 
         public ManageController(
-        UserManager<MongoIdentityUser> userManager,
-        SignInManager<MongoIdentityUser> signInManager,
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
         IEmailSender emailSender,
         ISmsSender smsSender,
         ILoggerFactory loggerFactory)
@@ -55,7 +55,8 @@ namespace IdentitySamples.Controllers
                 PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
                 TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
                 Logins = await _userManager.GetLoginsAsync(user),
-                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
+                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
+                AuthenticatorKey = await _userManager.GetAuthenticatorKeyAsync(user)
             };
             return View(model);
         }
@@ -102,6 +103,37 @@ namespace IdentitySamples.Controllers
             var code = await _userManager.GenerateChangePhoneNumberTokenAsync(user, model.PhoneNumber);
             await _smsSender.SendSmsAsync(model.PhoneNumber, "Your security code is: " + code);
             return RedirectToAction(nameof(VerifyPhoneNumber), new { PhoneNumber = model.PhoneNumber });
+        }
+
+        //
+        // POST: /Manage/ResetAuthenticatorKey
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetAuthenticatorKey()
+        {
+            var user = await GetCurrentUserAsync();
+            if (user != null)
+            {
+                await _userManager.ResetAuthenticatorKeyAsync(user);
+                _logger.LogInformation(1, "User reset authenticator key.");
+            }
+            return RedirectToAction(nameof(Index), "Manage");
+        }
+
+        //
+        // POST: /Manage/GenerateRecoveryCode
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GenerateRecoveryCode()
+        {
+            var user = await GetCurrentUserAsync();
+            if (user != null)
+            {
+                var codes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 5);
+                _logger.LogInformation(1, "User generated new recovery code.");
+                return View("DisplayRecoveryCodes", new DisplayRecoveryCodesViewModel { Codes = codes });
+            }
+            return View("Error");
         }
 
         //
@@ -273,7 +305,8 @@ namespace IdentitySamples.Controllers
                 return View("Error");
             }
             var userLogins = await _userManager.GetLoginsAsync(user);
-            var otherLogins = _signInManager.GetExternalAuthenticationSchemes().Where(auth => userLogins.All(ul => auth.AuthenticationScheme != ul.LoginProvider)).ToList();
+            var schemes = await _signInManager.GetExternalAuthenticationSchemesAsync();
+            var otherLogins = schemes.Where(auth => userLogins.All(ul => auth.Name != ul.LoginProvider)).ToList();
             ViewData["ShowRemoveButton"] = user.PasswordHash != null || userLogins.Count > 1;
             return View(new ManageLoginsViewModel
             {
@@ -336,7 +369,7 @@ namespace IdentitySamples.Controllers
             Error
         }
 
-        private Task<MongoIdentityUser> GetCurrentUserAsync()
+        private Task<ApplicationUser> GetCurrentUserAsync()
         {
             return _userManager.GetUserAsync(HttpContext.User);
         }
