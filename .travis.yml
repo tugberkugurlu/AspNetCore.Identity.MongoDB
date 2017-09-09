@@ -18,10 +18,11 @@ env:
     - secure: hFGb7DIEw6UAXIEtvmIpGvSwnijtiFBHlQ+0v2FFx96qQEYMzzbUSaw1WJEOBxav8vnvBsUhgEE6eqKiVjm/aENy467ULpMIUcGdW2Ab6HVoiBpCG9688cXVCTQnBjldntWHJFieWx4ptGekM2/zQhTO/2evDschBJj/gm1A4zaG7zqgMB+1auPBuE6t2PtX34MKRpHdIZlENZdRQgWWPvaAnqZmmpBVvxA+V6iNQHcoVQ1ZS6ZFaWQ0t/19KpO0SY6bU5udM35Uojvl8ebj1W6IwByz2FG4n8jWGMRSBXIqlyJI9ibSDn479STqnI6ds0Ad14RITcj1esD+cyazMqbG8koS0kAClJzSM+PXBhdsZjharvqLuzJO61o+HqC2OMy2V93NZ0NfEGPWymG0cHDLPJ2TmJAG7lJLVY4yq1h2qPJH6BFZ/YAGAI9+HxNkvtKWtfFUNCMaZt0lWWpiCV1SG/KliwClBqWbBo/kLUmQ/bZjRpap3KASrVs1fc2u4bD6Ab4HU8xjtGcMRkceZGCmoVHeyECndxbl1iMbXzBDWhsuV3UA7+NPZDHAPsj1H/SunskdAQEWnxHFPvfCb4YEhbtvdFd68oecC9/NYQO/ORMfSDWMLRGU70Cs3G8mz8Iew4sCZc/YsoGUltUm4eMTB+y7go2TWOKhS/e/4OQ=
 
 install:
-  - sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
-  - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 417A0893
+  - curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+  - sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+  - sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-ubuntu-trusty-prod trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
   - sudo apt-get update
-  - sudo apt-get install -y --no-install-recommends dotnet-dev-2.0.0
+  - sudo apt-get install -y --no-install-recommends dotnet-sdk-2.0.0
   - curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
   - sudo apt-get install -y nodejs
   - sudo npm install semver -g
