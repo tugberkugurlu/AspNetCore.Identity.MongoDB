@@ -11,12 +11,6 @@ using MongoDB.Driver;
 
 namespace IdentitySample
 {
-    public class MongoDbSettings 
-    {
-        public string ConnectionString { get; set; }
-        public string DatabaseName { get; set; }
-    }
-
     public class Startup
     {
         public Startup(IHostingEnvironment env)
