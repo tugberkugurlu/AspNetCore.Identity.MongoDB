@@ -4,7 +4,7 @@
 
 ## Using the Library
 
-[The library is available at NuGet.org](https://www.nuget.org/packages/AspNetCore.Identity.MongoDB). You can start using the library by integrating it into your `project.json` file. This library supports [`netstandard1.6`](https://docs.microsoft.com/en-us/dotnet/articles/standard/library).
+[The library is available at NuGet.org](https://www.nuget.org/packages/AspNetCore.Identity.MongoDB). This library supports [`netstandard1.6`](https://docs.microsoft.com/en-us/dotnet/articles/standard/library).
 
 ### Samples
 
