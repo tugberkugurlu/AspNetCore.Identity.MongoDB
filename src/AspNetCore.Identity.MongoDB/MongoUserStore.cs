@@ -21,7 +21,9 @@ namespace AspNetCore.Identity.MongoDB
         IUserTwoFactorStore<TUser>,
         IUserEmailStore<TUser>,
         IUserLockoutStore<TUser>,
-        IUserPhoneNumberStore<TUser>
+        IUserPhoneNumberStore<TUser>,
+        IUserAuthenticatorKeyStore<TUser>,
+        IUserTwoFactorRecoveryCodeStore<TUser>
         where TUser : MongoIdentityUser
     {
         [SuppressMessage("ReSharper", "StaticMemberInGenericType")]
@@ -790,5 +792,95 @@ namespace AspNetCore.Identity.MongoDB
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
+
+          private const string AuthenticatorStoreLoginProvider = "[AspNetAuthenticatorStore]";
+        private const string AuthenticatorKeyTokenName = "AuthenticatorKey";
+        private const string RecoveryCodeTokenName = "RecoveryCodes";
+        public Task SetAuthenticatorKeyAsync(TUser user, string key, CancellationToken cancellationToken)
+        {
+            return SetTokenAsync(user, AuthenticatorStoreLoginProvider, AuthenticatorKeyTokenName, key, cancellationToken);
+        }
+        
+        public Task<string> GetAuthenticatorKeyAsync(TUser user, CancellationToken cancellationToken)
+        {
+            return GetTokenAsync(user, AuthenticatorStoreLoginProvider, AuthenticatorKeyTokenName, cancellationToken);
+        }
+
+        public Task ReplaceCodesAsync(TUser user, IEnumerable<string> recoveryCodes, CancellationToken cancellationToken)
+        {
+            var mergedCodes = string.Join(";", recoveryCodes);
+            return SetTokenAsync(user, AuthenticatorStoreLoginProvider, RecoveryCodeTokenName, mergedCodes, cancellationToken);
+        }
+
+        public Task<bool> RedeemCodeAsync(TUser user, string code, CancellationToken cancellationToken)
+        {
+            var mergedCodes =  GetTokenAsync(user, AuthenticatorStoreLoginProvider, RecoveryCodeTokenName, cancellationToken).Result;
+            var splitCodes = (mergedCodes??"").Split(';');
+            if (splitCodes.Contains(code))
+            {
+                var updatedCodes = new List<string>(splitCodes.Where(s => s != code));
+                ReplaceCodesAsync(user, updatedCodes, cancellationToken);
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<int> CountCodesAsync(TUser user, CancellationToken cancellationToken)
+        {
+            var mergedCodes =  GetTokenAsync(user, AuthenticatorStoreLoginProvider, RecoveryCodeTokenName, cancellationToken).Result??"";
+            if (mergedCodes.Length > 0)
+            {
+                return Task.FromResult(mergedCodes.Split(';').Length);
+            }
+            return Task.FromResult(0);
+        }
+
+   
+
+        public Task SetTokenAsync(TUser user, string loginProvider, string name, string value, CancellationToken cancellationToken)
+        {
+            var tokenEntity =
+                user.Tokens.SingleOrDefault(
+                    l =>
+                        l.TokenName == name && l.LoginProvider == loginProvider);
+            if (tokenEntity != null)
+            {
+                tokenEntity.TokenValue = value;
+            }
+            else
+            {
+                user.AddToken(new MongoUserToken
+                {
+                   
+                    LoginProvider = loginProvider,
+                    TokenName = name,
+                    TokenValue = value
+                });
+            }
+            return Task.FromResult(0);
+        }
+
+        public Task RemoveTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken)
+        {
+             var tokenEntity =
+                user.Tokens.SingleOrDefault(
+                    l =>
+                        l.TokenName == name && l.LoginProvider == loginProvider);
+            if (tokenEntity != null)
+            {
+                user.RemoveToken(tokenEntity);
+            }
+            return Task.FromResult(0);
+        }
+
+        public Task<string> GetTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken)
+        {
+             var tokenEntity =
+                user.Tokens.SingleOrDefault(
+                    l =>
+                        l.TokenName == name && l.LoginProvider == loginProvider);
+            return Task.FromResult(tokenEntity?.TokenValue);
+        }
+
     }
 }
