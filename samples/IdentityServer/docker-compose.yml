@@ -1,0 +1,57 @@
+version: '3.1'
+
+networks:
+  idsrv-net:
+    driver: overlay
+  
+services:
+  idsrv-proxy:
+    image: idsrv-proxy
+    build:
+      context: ./source/NginxProxy/
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      - VIRTUAL_PORT=5000
+    networks:
+      - idsrv-net
+    links:
+      - idsrv4
+      - mvcclient
+      - mongodb
+  idsrv4:
+    image: idsrv4
+    build:
+      context: ./source/IdSrv4/bin/PublishOutput/
+      dockerfile: Dockerfile
+    volumes: 
+      - ./source/IdSrv4/bin/PublishOutput/:/app
+      - ~/.nuget/packages:/root/.nuget/packages:ro
+    networks:
+      - idsrv-net
+  mvcclient:
+    image: mvcclient
+    build:
+      context: ./source/MvcClient/bin/PublishOutput/
+      dockerfile: Dockerfile
+    volumes:
+      - ./source/MvcClient/bin/PublishOutput/:/app
+      - ~/.nuget/packages:/root/.nuget/packages:ro
+    networks:
+      - idsrv-net
+    extra_hosts:
+      login.127.0.0.1.xip.io: 192.168.10.21
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=./stack/data/db
+      - MONGO_LOG_DIR=./stack/dev/null
+    volumes:
+      - ./stack/data/db:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - idsrv-net
+    command: mongod --smallfiles --logpath=/dev/null # --quiet    
