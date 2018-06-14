@@ -6,13 +6,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace IdentitySample
+namespace AspNetCore.Identity.MongoDB
 {
     public static class MongoIdentityServiceCollectionExtensions 
     {
+        /// <summary>
+        /// Adds the Identity setup for use with the MongoDB database provider for AspNetCore Identity.
+        /// </summary>
         public static IdentityBuilder AddIdentity<TUser>(this IServiceCollection services)
             where TUser : class => services.AddIdentity<TUser>(null);
 
+        /// <summary>
+        /// Adds the Identity setup for use with the MongoDB database provider for AspNetCore Identity.
+        /// </summary>
         public static IdentityBuilder AddIdentity<TUser>(this IServiceCollection services, Action<IdentityOptions> setupAction)
             where TUser : class
         {
