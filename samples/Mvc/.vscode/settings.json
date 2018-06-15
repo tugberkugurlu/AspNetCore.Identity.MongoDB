@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "*.dockerfile.*": "dockerfile"
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/obj": true,
+        "**/bin": true
+    }
+}
