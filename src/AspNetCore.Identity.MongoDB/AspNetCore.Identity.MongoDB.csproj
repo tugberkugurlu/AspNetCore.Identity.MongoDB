@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Ensure.That" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.0" />

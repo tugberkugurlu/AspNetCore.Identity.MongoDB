@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using MongoDB.Bson.Serialization.Conventions;
+using EnsureThat;
 
 namespace AspNetCore.Identity.MongoDB
 {
@@ -47,15 +48,8 @@ namespace AspNetCore.Identity.MongoDB
 
         public MongoUserStore(IMongoDatabase database, string userCollectionName)
         {
-            if(database == null)
-            {
-                throw new ArgumentNullException(nameof(database));
-            }
-            
-            if (userCollectionName == null)
-            {
-                throw new ArgumentNullException(nameof(userCollectionName));
-            }
+            Ensure.That(database, nameof(database)).IsNotNull();
+            Ensure.That(userCollectionName, nameof(userCollectionName)).IsNotNullOrWhiteSpace();
 
             _usersCollection = database.GetCollection<TUser>(userCollectionName);
 
@@ -64,10 +58,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -79,10 +70,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public async Task<IdentityResult> DeleteAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -98,10 +86,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<TUser> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
-            if (userId == null)
-            {
-                throw new ArgumentNullException(nameof(userId));
-            }
+            Ensure.That(userId, nameof(userId)).IsNotNullOrWhiteSpace();
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -115,10 +100,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
-            if (normalizedUserName == null)
-            {
-                throw new ArgumentNullException(nameof(normalizedUserName));
-            }
+            Ensure.That(normalizedUserName, nameof(normalizedUserName)).IsNotNullOrWhiteSpace();
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -132,45 +114,29 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<string> GetNormalizedUserNameAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             return Task.FromResult(user.NormalizedUserName);
         }
 
         public Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             return Task.FromResult(user.Id);
         }
 
         public Task<string> GetUserNameAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             return Task.FromResult(user.UserName);
         }
 
         public Task SetNormalizedUserNameAsync(TUser user, string normalizedName, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (normalizedName == null)
-            {
-                throw new ArgumentNullException(nameof(normalizedName));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
+            Ensure.That(normalizedName, nameof(normalizedName)).IsNotNullOrWhiteSpace();
 
             user.SetNormalizedUserName(normalizedName);
 
@@ -184,10 +150,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public async Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             var query = Builders<TUser>.Filter.And(
                 Builders<TUser>.Filter.Eq(u => u.Id, user.Id),
@@ -203,15 +166,8 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task AddLoginAsync(TUser user, UserLoginInfo login, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (login == null)
-            {
-                throw new ArgumentNullException(nameof(login));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
+            Ensure.That(login, nameof(login)).IsNotNull();
 
             // NOTE: Not the best way to ensure uniquness.
             if (user.Logins.Any(x => x.Equals(login)))
@@ -226,20 +182,9 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task RemoveLoginAsync(TUser user, string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (loginProvider == null)
-            {
-                throw new ArgumentNullException(nameof(loginProvider));
-            }
-
-            if (providerKey == null)
-            {
-                throw new ArgumentNullException(nameof(providerKey));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
+            Ensure.That(loginProvider, nameof(loginProvider)).IsNotNullOrWhiteSpace();
+            Ensure.That(providerKey, nameof(providerKey)).IsNotNullOrWhiteSpace();
 
             var login = new UserLoginInfo(loginProvider, providerKey, string.Empty);
             var loginToRemove = user.Logins.FirstOrDefault(x => x.Equals(login));
@@ -254,12 +199,9 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
-            var logins = user.Logins.Select(login => 
+            var logins = user.Logins.Select(login =>
                 new UserLoginInfo(login.LoginProvider, login.ProviderKey, login.ProviderDisplayName));
 
             return Task.FromResult<IList<UserLoginInfo>>(logins.ToList());
@@ -267,15 +209,8 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<TUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            if (loginProvider == null)
-            {
-                throw new ArgumentNullException(nameof(loginProvider));
-            }
-
-            if (providerKey == null)
-            {
-                throw new ArgumentNullException(nameof(providerKey));
-            }
+            Ensure.That(loginProvider, nameof(loginProvider)).IsNotNullOrWhiteSpace();
+            Ensure.That(providerKey, nameof(providerKey)).IsNotNullOrWhiteSpace();
 
             var notDeletedQuery = Builders<TUser>.Filter.Eq(u => u.DeletedOn, null);
             var loginQuery = Builders<TUser>.Filter.ElemMatch(usr => usr.Logins,
@@ -292,10 +227,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<IList<Claim>> GetClaimsAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             var claims = user.Claims.Select(clm => new Claim(clm.ClaimType, clm.ClaimValue)).ToList();
 
@@ -304,15 +236,8 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task AddClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (claims == null)
-            {
-                throw new ArgumentNullException(nameof(claims));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
+            Ensure.That(claims, nameof(claims)).IsNotNull();
 
             foreach (var claim in claims)
             {
@@ -324,20 +249,9 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task ReplaceClaimAsync(TUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (claim == null)
-            {
-                throw new ArgumentNullException(nameof(claim));
-            }
-
-            if (newClaim == null)
-            {
-                throw new ArgumentNullException(nameof(newClaim));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
+            Ensure.That(claim, nameof(claim)).IsNotNull();
+            Ensure.That(newClaim, nameof(newClaim)).IsNotNull();
 
             user.RemoveClaim(new MongoUserClaim(claim));
             user.AddClaim(newClaim);
@@ -347,15 +261,8 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task RemoveClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (claims == null)
-            {
-                throw new ArgumentNullException(nameof(claims));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
+            Ensure.That(claims, nameof(claims)).IsNotNull();
 
             foreach (var claim in claims)
             {
@@ -367,10 +274,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public async Task<IList<TUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
         {
-            if (claim == null)
-            {
-                throw new ArgumentNullException(nameof(claim));
-            }
+            Ensure.That(claim, nameof(claim)).IsNotNull();
 
             var notDeletedQuery = Builders<TUser>.Filter.Eq(u => u.DeletedOn, null);
             var claimQuery = Builders<TUser>.Filter.ElemMatch(usr => usr.Claims,
@@ -388,10 +292,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task SetPasswordHashAsync(TUser user, string passwordHash, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             user.SetPasswordHash(passwordHash);
 
@@ -400,35 +301,22 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<string> GetPasswordHashAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             return Task.FromResult(user.PasswordHash);
         }
 
         public Task<bool> HasPasswordAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             return Task.FromResult(user.PasswordHash != null);
         }
 
         public Task SetSecurityStampAsync(TUser user, string stamp, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (stamp == null)
-            {
-                throw new ArgumentNullException(nameof(stamp));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
+            Ensure.That(stamp, nameof(stamp)).IsNotNullOrWhiteSpace();
 
             user.SetSecurityStamp(stamp);
 
@@ -437,20 +325,14 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<string> GetSecurityStampAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             return Task.FromResult(user.SecurityStamp);
         }
 
         public Task SetTwoFactorEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             if (enabled)
             {
@@ -466,25 +348,15 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<bool> GetTwoFactorEnabledAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             return Task.FromResult(user.IsTwoFactorEnabled);
         }
 
         public Task SetEmailAsync(TUser user, string email, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (email == null)
-            {
-                throw new ArgumentNullException(nameof(email));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
+            Ensure.That(email, nameof(email)).IsNotNullOrWhiteSpace();
 
             user.SetEmail(email);
 
@@ -493,10 +365,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<string> GetEmailAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             var email = (user.Email != null) ? user.Email.Value : null;
 
@@ -505,10 +374,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<bool> GetEmailConfirmedAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             if (user.Email == null)
             {
@@ -520,10 +386,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task SetEmailConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             if (user.Email == null)
             {
@@ -544,10 +407,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
         {
-            if (normalizedEmail == null)
-            {
-                throw new ArgumentNullException(nameof(normalizedEmail));
-            }
+            Ensure.That(normalizedEmail, nameof(normalizedEmail)).IsNotNullOrWhiteSpace();
 
             var query = Builders<TUser>.Filter.And(
                 Builders<TUser>.Filter.Eq(u => u.Email.NormalizedValue, normalizedEmail),
@@ -559,10 +419,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<string> GetNormalizedEmailAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             var normalizedEmail = (user.Email != null) ? user.Email.NormalizedValue : null;
 
@@ -571,18 +428,15 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task SetNormalizedEmailAsync(TUser user, string normalizedEmail, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-            
+            Ensure.That(user, nameof(user)).IsNotNull();
+
             // This method can be called even if user doesn't have an e-mail.
             // Act cool in this case and gracefully handle.
             // More info: https://github.com/aspnet/Identity/issues/645
 
-            if(normalizedEmail != null && user.Email != null)
+            if (normalizedEmail != null && user.Email != null)
             {
-                user.Email.SetNormalizedEmail(normalizedEmail);   
+                user.Email.SetNormalizedEmail(normalizedEmail);
             }
 
             return Task.FromResult(0);
@@ -590,10 +444,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<DateTimeOffset?> GetLockoutEndDateAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             var lockoutEndDate = user.LockoutEndDate != null
                 ? new DateTimeOffset(user.LockoutEndDate.Instant)
@@ -604,12 +455,9 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task SetLockoutEndDateAsync(TUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
-            if(lockoutEnd != null)
+            if (lockoutEnd != null)
             {
                 user.LockUntil(lockoutEnd.Value.UtcDateTime);
             }
@@ -619,10 +467,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public async Task<int> IncrementAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             var filter = Builders<TUser>.Filter.Eq(u => u.Id, user.Id);
             var update = Builders<TUser>.Update.Inc(usr => usr.AccessFailedCount, 1);
@@ -643,10 +488,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task ResetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             user.ResetAccessFailedCount();
 
@@ -655,30 +497,21 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<int> GetAccessFailedCountAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             return Task.FromResult(user.AccessFailedCount);
         }
 
         public Task<bool> GetLockoutEnabledAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             return Task.FromResult(user.IsLockoutEnabled);
         }
 
         public Task SetLockoutEnabledAsync(TUser user, bool enabled, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             if (enabled)
             {
@@ -694,15 +527,8 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task SetPhoneNumberAsync(TUser user, string phoneNumber, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (phoneNumber == null)
-            {
-                throw new ArgumentNullException(nameof(phoneNumber));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
+            Ensure.That(phoneNumber, nameof(phoneNumber)).IsNotNullOrWhiteSpace();
 
             user.SetPhoneNumber(phoneNumber);
 
@@ -711,20 +537,14 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task<string> GetPhoneNumberAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             return Task.FromResult(user.PhoneNumber?.Value);
         }
 
         public Task<bool> GetPhoneNumberConfirmedAsync(TUser user, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             if (user.PhoneNumber == null)
             {
@@ -736,10 +556,7 @@ namespace AspNetCore.Identity.MongoDB
 
         public Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed, CancellationToken cancellationToken)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            Ensure.That(user, nameof(user)).IsNotNull();
 
             if (user.PhoneNumber == null)
             {
@@ -762,7 +579,7 @@ namespace AspNetCore.Identity.MongoDB
                 return EnsureIndicesCreatedImplAsync();
             });
 
-            if(obj != null)
+            if (obj != null)
             {
                 var taskToAwait = (Task)obj;
                 await taskToAwait.ConfigureAwait(false);
