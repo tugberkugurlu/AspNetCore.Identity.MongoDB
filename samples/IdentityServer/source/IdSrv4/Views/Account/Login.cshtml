@@ -42,6 +42,14 @@
                                 <div class="form-group">
                                     <button class="btn btn-primary" name="button" value="login">Login</button>
                                     <button class="btn btn-default" name="button" value="cancel">Cancel</button>
+                                    @if (string.IsNullOrWhiteSpace(Model.ReturnUrl))
+                                    {
+                                        <a href="http://register.127.0.0.1.xip.io" class="btn btn-default">Register</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="http://register.127.0.0.1.xip.io/?returnUrl=@Model.ReturnUrl" class="btn btn-default">Register</a>
+                                    }
                                 </div>
                             </fieldset>
                         </form>

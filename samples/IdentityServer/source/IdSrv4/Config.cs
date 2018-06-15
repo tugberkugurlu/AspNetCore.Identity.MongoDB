@@ -18,6 +18,15 @@ namespace IdSrv4
             };
         }
 
+        public static IEnumerable<IdentityResource> GetIdentityResources()
+        {
+            yield return new IdentityResources.OpenId();
+            yield return new IdentityResources.Profile();
+            yield return new IdentityResources.Phone();
+            yield return new IdentityResources.Email();
+            yield return new IdentityResources.Address();
+        }
+
         // clients want to access resources (aka scopes)
         public static IEnumerable<Client> GetClients()
         {
@@ -42,10 +51,11 @@ namespace IdSrv4
                     AllowedScopes = 
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
-                        IdentityServerConstants.StandardScopes.Profile,
-                        IdentityServerConstants.StandardScopes.Email
+                        IdentityServerConstants.StandardScopes.Profile
                     },
-                    AllowOfflineAccess = true
+                    AllowOfflineAccess = true,
+
+                    RequirePkce = false
                 }
 
             };

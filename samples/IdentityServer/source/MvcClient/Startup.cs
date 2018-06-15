@@ -47,13 +47,12 @@ namespace MvcClient
                     options.ClientSecret = "secret".Sha256();
                     options.ResponseType = "code id_token";
 
-                    //options.Scope.Clear();
-                    //options.Scope.Add("openid");
-                    //options.Scope.Add("profile");
-                    //options.Scope.Add("email");
-
                     options.SaveTokens = true;
-                });
+                    options.GetClaimsFromUserInfoEndpoint = true;
+
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                 });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

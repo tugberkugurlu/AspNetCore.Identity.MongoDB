@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AspNetCore.Identity.MongoDB;
+﻿using AspNetCore.Identity.MongoDB;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace IdSrv4
+namespace Registration
 {
     public class Startup
     {
@@ -27,10 +23,9 @@ namespace IdSrv4
             Configuration = builder.Build();
         }
 
-        public IConfigurationRoot Configuration { get; set; }
+        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<MongoDbSettings>(Configuration.GetSection("MongoDb"));
@@ -43,16 +38,10 @@ namespace IdSrv4
                 return new MongoUserStore<MongoIdentityUser>(database);
             });
 
-            services.AddIdentity<MongoIdentityUser>();
+            services.AddIdentity<MongoIdentityUser>()
+                .AddDefaultTokenProviders();
 
-            services.AddMvc();
-
-            services.AddIdentityServer()
-                    .AddDeveloperSigningCredential()
-                    .AddInMemoryApiResources(Config.GetApiResources())
-                    .AddInMemoryIdentityResources(Config.GetIdentityResources())
-                    .AddInMemoryClients(Config.GetClients())
-                    .AddAspNetIdentity<MongoIdentityUser>();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -62,11 +51,22 @@ namespace IdSrv4
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
 
-            app.UseIdentityServer();
-
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseMvcWithDefaultRoute();
+            app.UseCookiePolicy();
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }

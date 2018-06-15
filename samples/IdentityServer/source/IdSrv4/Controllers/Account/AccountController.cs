@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace IdSrv4.Controllers.Account
@@ -219,8 +220,6 @@ namespace IdSrv4.Controllers.Account
 
             return View("LoggedOut", vm);
         }
-
-
 
         /*****************************************/
         /* helper APIs for the AccountController */
