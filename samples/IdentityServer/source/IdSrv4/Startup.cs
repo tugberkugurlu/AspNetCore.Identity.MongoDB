@@ -39,7 +39,7 @@ namespace IdSrv4
                 var options = provider.GetService<IOptions<MongoDbSettings>>();
                 var client = new MongoClient(options.Value.ConnectionString);
                 var database = client.GetDatabase(options.Value.DatabaseName);
- 
+
                 return new MongoUserStore<MongoIdentityUser>(database);
             });
 
@@ -47,7 +47,11 @@ namespace IdSrv4
 
             services.AddMvc();
 
-            services.AddIdentityServer()
+            services.AddIdentityServer(opts =>
+                    {
+                        //opts.PublicOrigin = "http://login.127.0.0.1.xip.io/";
+                        //opts.IssuerUri = "http://login.127.0.0.1.xip.io/";
+                    })
                     .AddDeveloperSigningCredential()
                     .AddInMemoryApiResources(Config.GetApiResources())
                     .AddInMemoryIdentityResources(Config.GetIdentityResources())

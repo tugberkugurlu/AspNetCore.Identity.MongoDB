@@ -11,8 +11,8 @@ RUN update-ca-certificates --fresh \
 
 WORKDIR /app
 
-EXPOSE 5002
+EXPOSE 5000
 
-ENV ASPNETCORE_URLS http://+:5002
+ENV ASPNETCORE_URLS http://+:5000
 
 ENTRYPOINT [ "tail", "-f", "/dev/null" ]

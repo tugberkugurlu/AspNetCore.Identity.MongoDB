@@ -22,7 +22,8 @@ namespace AspNetCore.Identity.MongoDB
         IUserTwoFactorStore<TUser>,
         IUserEmailStore<TUser>,
         IUserLockoutStore<TUser>,
-        IUserPhoneNumberStore<TUser>
+        IUserPhoneNumberStore<TUser>,
+        IQueryableUserStore<TUser>
         where TUser : MongoIdentityUser
     {
         [SuppressMessage("ReSharper", "StaticMemberInGenericType")]
@@ -35,6 +36,18 @@ namespace AspNetCore.Identity.MongoDB
         private static object _initializationTarget;
 
         private readonly IMongoCollection<TUser> _usersCollection;
+
+        /// <summary>
+        /// Gets a queryable list of users.
+        /// </summary>
+        public IQueryable<TUser> Users
+        {
+            get
+            {
+                // Note: Need to determine if we need to set options for the AsQueryable() call or not.
+                return _usersCollection.AsQueryable();
+            }
+        }
 
         static MongoUserStore()
         {
@@ -98,7 +111,7 @@ namespace AspNetCore.Identity.MongoDB
             return _usersCollection.Find(query).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public async Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             Ensure.That(normalizedUserName, nameof(normalizedUserName)).IsNotNullOrWhiteSpace();
 
@@ -109,7 +122,9 @@ namespace AspNetCore.Identity.MongoDB
                 Builders<TUser>.Filter.Eq(u => u.DeletedOn, null)
             );
 
-            return _usersCollection.Find(query).FirstOrDefaultAsync(cancellationToken);
+            var user = await _usersCollection.Find(query).FirstOrDefaultAsync(cancellationToken);
+
+            return user;
         }
 
         public Task<string> GetNormalizedUserNameAsync(TUser user, CancellationToken cancellationToken)

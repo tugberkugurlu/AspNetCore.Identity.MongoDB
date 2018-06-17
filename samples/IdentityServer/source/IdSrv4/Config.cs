@@ -45,8 +45,8 @@ namespace IdSrv4
                         new Secret("secret".Sha256())
                     },
 
-                    RedirectUris = { "http://mvcclient.127.0.0.1.xip.io:80/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://mvcclient.127.0.0.1.xip.io:80/signout-callback-oidc" },
+                    RedirectUris = { "http://mvcclient.127.0.0.1.xip.io/signin-oidc" },
+                    PostLogoutRedirectUris = { "http://mvcclient.127.0.0.1.xip.io/signout-callback-oidc" },
 
                     AllowedScopes = 
                     {

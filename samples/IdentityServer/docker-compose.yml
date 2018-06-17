@@ -1,5 +1,9 @@
 version: '3.1'
   
+networks:
+  idsrvnet:
+    driver: overlay
+
 services:
   idsrv-proxy:
     image: idsrv-proxy
@@ -8,7 +12,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
-    network_mode: bridge
+    networks: 
+      - idsrvnet
     links:
       - idsrv4
       - mvcclient
@@ -22,7 +27,8 @@ services:
     volumes: 
       - ./source/IdSrv4/bin/PublishOutput/:/app
       - ~/.nuget/packages:/root/.nuget/packages:ro
-    network_mode: bridge
+    networks: 
+      - idsrvnet
   mvcclient:
     image: mvcclient
     build:
@@ -31,7 +37,10 @@ services:
     volumes:
       - ./source/MvcClient/bin/PublishOutput/:/app
       - ~/.nuget/packages:/root/.nuget/packages:ro
-    network_mode: bridge
+    networks: 
+      - idsrvnet
+    extra_hosts: 
+      login.127.0.0.1.xip.io: 192.168.10.21 # Edit this to be your local IP address of your computer.
   registration:
     image: registration
     build:
@@ -40,7 +49,8 @@ services:
     volumes: 
       - ./source/Registration/bin/PublishOutput/:/app
       - ~/.nuget/packages:/root/.nuget/packages:ro
-    network_mode: bridge
+    networks: 
+      - idsrvnet
   mongodb:
     image: mongo:latest
     container_name: "mongodb"
@@ -51,5 +61,6 @@ services:
       - ~/AspNetCore.Identity.MongoDB/Samples/data/db:/data/db
     ports:
       - 27017:27017
-    network_mode: bridge
+    networks: 
+      - idsrvnet
     command: mongod --smallfiles --logpath=/dev/null # --quiet    
