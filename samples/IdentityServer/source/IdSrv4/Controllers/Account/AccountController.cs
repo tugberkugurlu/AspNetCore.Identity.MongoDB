@@ -159,15 +159,25 @@ namespace IdSrv4.Controllers.Account
                             throw new Exception("invalid return URL");
                         }
                     }
+                    else
+                    {
+                        await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "Invalid password", true));
+                    }
+                }
+                else
+                {
+                    await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "Invalid username", true));
                 }
             }
+
+            ModelState.AddModelError(string.Empty, "Invalid username or password");
 
             // something went wrong, show form with error
             var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
         }
 
-        
+
         /// <summary>
         /// Show logout page
         /// </summary>

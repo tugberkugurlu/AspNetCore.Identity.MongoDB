@@ -111,7 +111,7 @@ namespace AspNetCore.Identity.MongoDB
             return _usersCollection.Find(query).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public Task<TUser> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             Ensure.That(normalizedUserName, nameof(normalizedUserName)).IsNotNullOrWhiteSpace();
 
@@ -122,9 +122,7 @@ namespace AspNetCore.Identity.MongoDB
                 Builders<TUser>.Filter.Eq(u => u.DeletedOn, null)
             );
 
-            var user = await _usersCollection.Find(query).FirstOrDefaultAsync(cancellationToken);
-
-            return user;
+            return _usersCollection.Find(query).FirstOrDefaultAsync(cancellationToken);
         }
 
         public Task<string> GetNormalizedUserNameAsync(TUser user, CancellationToken cancellationToken)
