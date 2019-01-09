@@ -10,7 +10,9 @@ namespace AspNetCore.Identity.MongoDB
     [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local", Justification = "MongoDB serialization needs private setters")]
     public class MongoIdentityUser
     {
+        private List<MongoUserToken> _tokens;
         private List<MongoUserClaim> _claims;
+        
         private List<MongoUserLogin> _logins;
 
         public MongoIdentityUser(string userName, string email) : this(userName)
@@ -42,6 +44,7 @@ namespace AspNetCore.Identity.MongoDB
 
             EnsureClaimsIsSet();
             EnsureLoginsIsSet();
+            EnsureTokensIsSet();
         }
 
         public string Id { get; private set; }
@@ -72,7 +75,24 @@ namespace AspNetCore.Identity.MongoDB
                 }
             }
         }
+        public IEnumerable<MongoUserToken> Tokens
+        {
+            get
+            {
+                EnsureTokensIsSet();
+                return _tokens;
+            }
 
+            // ReSharper disable once UnusedMember.Local, MongoDB serialization needs private setters
+            private set
+            {
+                EnsureTokensIsSet();
+                if (value != null)
+                {
+                    _tokens.AddRange(value);
+                }
+            }
+        }
         public IEnumerable<MongoUserLogin> Logins
         {
             get
@@ -175,7 +195,25 @@ namespace AspNetCore.Identity.MongoDB
         {
             LockoutEndDate = new FutureOccurrence(lockoutEndDate);
         }
+        public virtual void AddToken(MongoUserToken mongoUserToken)
+        {
+            if (mongoUserToken == null)
+            {
+                throw new ArgumentNullException(nameof(mongoUserToken));
+            }
 
+            _tokens.Add(mongoUserToken);
+        }
+
+        public virtual void RemoveToken(MongoUserToken mongoUserToken)
+        {
+            if (mongoUserToken == null)
+            {
+                throw new ArgumentNullException(nameof(mongoUserToken));
+            }
+
+            _tokens.Remove(mongoUserToken);
+        }
         public virtual void AddClaim(Claim claim)
         {
             if (claim == null)
@@ -243,7 +281,13 @@ namespace AspNetCore.Identity.MongoDB
                 _claims = new List<MongoUserClaim>();
             }
         }
-
+        private void EnsureTokensIsSet()
+        {
+            if (_tokens == null)
+            {
+                _tokens = new List<MongoUserToken>();
+            }
+        }
         private void EnsureLoginsIsSet()
         {
             if (_logins == null)
