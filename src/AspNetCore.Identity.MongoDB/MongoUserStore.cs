@@ -56,19 +56,26 @@ namespace AspNetCore.Identity.MongoDB
             MongoConfig.EnsureConfigured();
         }
 
-        public MongoUserStore(IMongoDatabase database)
+        public static Task<MongoUserStore<TUser>> CreateAsync(IMongoDatabase database) => CreateAsync(database, Constants.DefaultCollectionName);
+        public static async Task<MongoUserStore<TUser>> CreateAsync(IMongoDatabase database, string userCollectionName)
+        {
+            var store = new MongoUserStore<TUser>(database, userCollectionName);
+            await store.EnsureIndicesCreatedAsync();
+            return store;
+        }
+
+
+        private MongoUserStore(IMongoDatabase database)
             : this(database, Constants.DefaultCollectionName)
         {
         }
 
-        public MongoUserStore(IMongoDatabase database, string userCollectionName)
+        private MongoUserStore(IMongoDatabase database, string userCollectionName)
         {
             Ensure.That(database, nameof(database)).IsNotNull();
             Ensure.That(userCollectionName, nameof(userCollectionName)).IsNotNullOrWhiteSpace();
 
             _usersCollection = database.GetCollection<TUser>(userCollectionName);
-
-            EnsureIndicesCreatedAsync().GetAwaiter().GetResult();
         }
 
         public async Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken)

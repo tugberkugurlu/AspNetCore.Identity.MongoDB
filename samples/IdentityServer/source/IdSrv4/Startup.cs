@@ -40,7 +40,7 @@ namespace IdSrv4
                 var client = new MongoClient(options.Value.ConnectionString);
                 var database = client.GetDatabase(options.Value.DatabaseName);
 
-                return new MongoUserStore<MongoIdentityUser>(database);
+                return MongoUserStore<MongoIdentityUser>.CreateAsync(database).GetAwaiter().GetResult();
             });
 
             services.AddIdentity<MongoIdentityUser>();

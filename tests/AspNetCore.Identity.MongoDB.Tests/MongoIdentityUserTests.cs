@@ -28,7 +28,7 @@ namespace AspNetCore.Identity.MongoDB.Tests
 
             using (var dbProvider = MongoDbServerTestUtils.CreateDatabase())
             {
-                var store = new MongoUserStore<MyIdentityUser>(dbProvider.Database);
+                var store = await MongoUserStore<MyIdentityUser>.CreateAsync(dbProvider.Database);
 
                 // ACT, ASSERT
                 var result = await store.CreateAsync(user, CancellationToken.None);
@@ -60,7 +60,7 @@ namespace AspNetCore.Identity.MongoDB.Tests
 
             using (var dbProvider = MongoDbServerTestUtils.CreateDatabase())
             {
-                var store = new MongoUserStore<MongoIdentityUser>(dbProvider.Database);
+                var store = await MongoUserStore<MongoIdentityUser>.CreateAsync(dbProvider.Database);
 
                 // ACT
                 var result = await store.CreateAsync(user, CancellationToken.None);

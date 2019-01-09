@@ -16,7 +16,7 @@ namespace AspNetCore.Identity.MongoDB.Tests
             var user = new MongoIdentityUser(TestUtils.RandomString(10));
             using (var dbProvider = MongoDbServerTestUtils.CreateDatabase())
             {
-                var store = new MongoUserStore<MongoIdentityUser>(dbProvider.Database);
+                var store = await MongoUserStore<MongoIdentityUser>.CreateAsync(dbProvider.Database);
 
                 // ACT
                 var result = await store.CreateAsync(user, CancellationToken.None);

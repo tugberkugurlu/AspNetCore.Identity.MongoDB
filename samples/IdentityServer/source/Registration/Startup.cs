@@ -34,8 +34,8 @@ namespace Registration
                 var options = provider.GetService<IOptions<MongoDbSettings>>();
                 var client = new MongoClient(options.Value.ConnectionString);
                 var database = client.GetDatabase(options.Value.DatabaseName);
- 
-                return new MongoUserStore<MongoIdentityUser>(database);
+
+                return MongoUserStore<MongoIdentityUser>.CreateAsync(database).GetAwaiter().GetResult();
             });
 
             services.AddIdentity<MongoIdentityUser>()
