@@ -1,0 +1,31 @@
+version: '3.1'
+networks:
+  mvcsample:
+    driver: overlay
+
+services:
+  mvc:
+    image: mvc
+    build:
+      context: ./source/IdentitySample.Mvc/bin/PublishOutput/
+      dockerfile: Dockerfile
+    volumes: 
+      - ./source/IdentitySample.Mvc/bin/PublishOutput/:/app
+      - ~/.nuget/packages:/root/.nuget/packages:ro
+    networks:
+      - mvcsample
+    ports:
+      - "5000:5000"
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=./stack/data/db
+      - MONGO_LOG_DIR=./stack/dev/null
+    volumes:
+      - ~/AspNetCore.Identity.MongoDB/Samples/data/db:/data/db
+    ports:
+      - 27017:27017
+    networks:
+      - mvcsample
+    command: mongod --smallfiles --logpath=/dev/null # --quiet    

@@ -1,0 +1,86 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "IdSrv4",
+            "type": "coreclr",
+            "request": "launch",
+            "cwd": "/app",
+            "program": "/app/IdSrv4.dll",
+            "sourceFileMap": {
+                "/app": "${workspaceRoot}/source/IdSrv4"
+            },
+            "pipeTransport": {
+                "debuggerPath": "/vsdbg/vsdbg",
+                "pipeProgram": "/bin/bash",
+                "pipeCwd": "${workspaceRoot}",
+                "pipeArgs": [
+                    "-c",
+                    "docker exec -i identityserver_idsrv4_1 /vsdbg/vsdbg --interpreter=vscode"
+                ],
+                "windows": {
+                    "pipeProgram": "${env:windir}/System32/WindowsPowerShell/v1.0/powershell.exe",
+                    "pipeCwd": "${workspaceRoot}",
+                    "pipeArgs": [
+                        "-c",
+                        "docker exec -i identityserver_idsrv4_1"
+                    ]
+                }
+            }
+        },        
+        {
+            "name": "MVC Client",
+            "type": "coreclr",
+            "request": "launch",
+            "cwd": "/app",
+            "program": "/app/MvcClient.dll",
+            "sourceFileMap": {
+                "/app": "${workspaceRoot}/source/MvcClient"
+            },
+            "pipeTransport": {
+                "debuggerPath": "/vsdbg/vsdbg",
+                "pipeProgram": "/bin/bash",
+                "pipeCwd": "${workspaceRoot}",
+                "pipeArgs": [
+                    "-c",
+                    "docker exec -i identityserver_mvcclient_1 /vsdbg/vsdbg --interpreter=vscode"
+                ],
+                "windows": {
+                    "pipeProgram": "${env:windir}/System32/WindowsPowerShell/v1.0/powershell.exe",
+                    "pipeCwd": "${workspaceRoot}",
+                    "pipeArgs": [
+                        "-c",
+                        "docker exec -i identityserver_mvcclient_1"
+                    ]
+                }
+            }
+        },        
+        {
+            "name": "Registration System",
+            "type": "coreclr",
+            "request": "launch",
+            "cwd": "/app",
+            "program": "/app/Registration.dll",
+            "sourceFileMap": {
+                "/app": "${workspaceRoot}/source/Registration"
+            },
+            "pipeTransport": {
+                "debuggerPath": "/vsdbg/vsdbg",
+                "pipeProgram": "/bin/bash",
+                "pipeCwd": "${workspaceRoot}",
+                "pipeArgs": [
+                    "-c",
+                    "docker exec -i identityserver_registration_1 /vsdbg/vsdbg --interpreter=vscode"
+                ],
+                "windows": {
+                    "pipeProgram": "${env:windir}/System32/WindowsPowerShell/v1.0/powershell.exe",
+                    "pipeCwd": "${workspaceRoot}",
+                    "pipeArgs": [
+                        "-c",
+                        "docker exec -i identityserver_registration_1"
+                    ]
+                }
+            }
+        }
+    ]
+}

@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Mvc Sample",
+            "type": "coreclr",
+            "request": "launch",
+            "cwd": "/app",
+            "program": "/app/IdentitySample.Mvc.dll",
+            "sourceFileMap": {
+                "/app": "${workspaceRoot}/source/IdentitySample.Mvc"
+            },
+            "pipeTransport": {
+                "debuggerPath": "/vsdbg/vsdbg",
+                "pipeProgram": "/bin/bash",
+                "pipeCwd": "${workspaceRoot}",
+                "pipeArgs": [
+                    "-c",
+                    "docker exec -i mvc_mvc_1 /vsdbg/vsdbg --interpreter=vscode"
+                ],
+                "windows": {
+                    "pipeProgram": "${env:windir}/System32/WindowsPowerShell/v1.0/powershell.exe",
+                    "pipeCwd": "${workspaceRoot}",
+                    "pipeArgs": [
+                        "-c",
+                        "docker exec -i mvc_mvc_1"
+                    ]
+                }
+            }
+        }
+    ]
+}
